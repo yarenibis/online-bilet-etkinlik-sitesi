@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template='/template.xhtml'>
+
+    
+    
+    
+     <ui:define name='menu2'></ui:define>
+    <ui:define name='menu'></ui:define>
+    
+    
+     <ui:define name='content1'>
+        <h:form>
+            <h:inputText value="#{sinemaBean.searchKeyword}" />
+            <h:commandButton value="Ara" action="#{sinemaBean.searchSinema()}" />
+
+            <h:dataTable value="#{sinemaBean.list}" var="sinema">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                        #{sinema.sinema_id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Adı</f:facet>
+                        #{sinema.film_adi}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Salon_no</f:facet>
+                        #{sinema.salon_no}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">Seç</f:facet>
+                    <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema)}"  />
+                </h:column>
+            </h:dataTable>
+        </h:form>
+        ARAMA SONUCU:
+        <h:form>
+            <h:dataTable value="#{sinemaBean.filteredSinemaList}" var="sinema">
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                    #{sinema.sinema_id}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Adı</f:facet>
+                   #{sinema.film_adi}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Salon_no</f:facet>
+                   #{sinema.salon_no}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Seç</f:facet>
+                <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema)}"  />
+            </h:column>
+        </h:dataTable>
+        </h:form>
+ </ui:define>
+</ui:composition>

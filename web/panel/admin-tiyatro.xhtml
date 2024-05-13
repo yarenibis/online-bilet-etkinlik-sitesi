@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template='/template.xhtml'>
+
+    
+    
+    
+     <ui:define name='menu'></ui:define>
+    <ui:define name='menu3'></ui:define>
+       
+     <ui:define name='content1'>
+     
+        <h:form>
+           
+           
+            Tiyatro adı <h:inputText value="#{tiyatroBean.entity.adı}" /> <br/>
+            Oyuncu adı <h:inputText value="#{tiyatroBean.entity.oyuncu}" />
+            Mekan: <h:inputText value="#{tiyatroBean.entity.mekan}" />
+           
+
+            Tarih <h:inputText value="#{tiyatroBean.entity.tarih}" />
+            <h:commandButton rendered="#{tiyatroBean.entity.id==0}" action="#{tiyatroBean.create()}" value="Create"/>
+            <h:commandButton rendered="#{tiyatroBean.entity.id!=0}" action="#{tiyatroBean.update()}" value="Update"/>
+            <h:commandButton rendered="#{tiyatroBean.entity.id!=0}" action="#{tiyatroBean.clear()}" value="Clear Form"/>
+
+        </h:form>
+        <hr/>
+        <h:form>
+            <h:dataTable value="#{tiyatroBean.list}" var="entity">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                        #{entity.id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">TİYATRO ADI</f:facet>
+                        #{entity.adı}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">OYUNCU ADI</f:facet>
+                        #{entity.oyuncu}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">MEKAN </f:facet>
+                        #{entity.mekan}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">TARİH</f:facet>
+                        #{entity.tarih}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">ADMİNİSTRATOR</f:facet>
+                    <h:commandButton  action="#{tiyatroBean.delete(entity)}" value="DELETE"/>
+                    <h:commandButton  action="#{tiyatroBean.setEntity(entity)}" value="UPDATE"/>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+        </ui:define>
+  
+</ui:composition>

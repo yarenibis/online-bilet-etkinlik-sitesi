@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+       <h:form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        
+           <a class="navbar-brand" href="index.xhtml" style="font-style: italic; color: blue;">Bileto</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                   
+                    
+                    <li class="nav-item">
+                      
+                            <h:commandLink styleClass="nav-link btn btn-link" value="Sinema" action="/kullanıcı/sinema" />
+                       
+                    </li>
+                    <li class="nav-item">
+                      
+                            <h:commandLink styleClass="nav-link btn btn-link" value="TalkShow" action="/kullanıcı/talkshow" />
+                       
+                    </li>
+                    <li class="nav-item">
+                      
+                            <h:commandLink styleClass="nav-link btn btn-link" value="Festival" action="/kullanıcı/festival" />
+                       
+                    </li>
+                    <li class="nav-item">
+                      
+                            <h:commandLink styleClass="nav-link btn btn-link" value="Tiyatro" action="/kullanıcı/tiyatro" />
+                       
+                    </li>
+                    <li class="nav-item">
+                      
+                            <h:commandLink styleClass="nav-link btn btn-link" value="Konser" action="/kullanıcı/konser" />
+                       
+                    </li>
+                </ul>
+      </div>
+    </nav>
+          </h:form>
+    
+</ui:composition>

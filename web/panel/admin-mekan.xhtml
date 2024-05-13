@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template='/template.xhtml'>
+
+    
+    
+    
+     <ui:define name='menu'></ui:define>
+    <ui:define name='menu3'></ui:define>
+       
+     <ui:define name='content1'>
+        <h:form>
+            MEKAN ADI <h:inputText value="#{mekanBean.entity.mekan_adi}" />
+            ADRES <h:inputText value="#{mekanBean.entity.adres}" />
+            KAPASİTE <h:inputText value="#{mekanBean.entity.kapasite}" />
+            <h:commandButton rendered="#{mekanBean.entity.mekan_id==0}" action="#{mekanBean.create()}" value="Create"/>
+            <h:commandButton rendered="#{mekanBean.entity.mekan_id!=0}" action="#{mekanBean.update()}" value="Update"/>
+            <h:commandButton rendered="#{mekanBean.entity.mekan_id!=0}" action="#{mekanBean.clear()}" value="Clear Form"/>
+
+        </h:form>
+        <hr/>
+        <h:form>
+            <h:dataTable value="#{mekanBean.list}" var="entity">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                        #{entity.mekan_id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">MEKAN ADI</f:facet>
+                        #{entity.mekan_adi}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">ADRES</f:facet>
+                        #{entity.adres}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">KAPASİTE</f:facet>
+                        #{entity.kapasite}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">ADMİNİSTRATOR</f:facet>
+                       <h:commandButton  action="#{mekanBean.delete(entity)}" value="DELETE"/>
+                       <h:commandButton  action="#{mekanBean.setEntity(entity)}" value="UPDATE"/>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+        </ui:define>
+</ui:composition>

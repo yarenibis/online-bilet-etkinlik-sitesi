@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template='/template.xhtml'>
+
+    
+    
+    
+     <ui:define name='menu'></ui:define>
+    <ui:define name='menu3'></ui:define>
+       
+     <ui:define name='content1'>
+        <h:form>
+            <h:commandButton action="/index" value="HOME"/>
+        </h:form>
+        <hr/>
+        <h:form>
+           
+            
+
+            
+            Konser adı <h:inputText value="#{konserBean.entity.adı}" /> 
+            Sanatçı <h:inputText value="#{konserBean.entity.sanatçı}" />
+            Mekan <h:inputText value="#{konserBean.entity.mekan}" />
+            Tarih <h:inputText value="#{konserBean.entity.tarih}" />
+            <h:commandButton rendered="#{konserBean.entity.id==0}" action="#{konserBean.create()}" value="Create"/>
+            <h:commandButton rendered="#{konserBean.entity.id!=0}" action="#{konserBean.update()}" value="Update"/>
+            <h:commandButton rendered="#{konserBean.entity.id!=0}" action="#{konserBean.clear()}" value="Clear Form"/>
+
+        </h:form>
+        <hr/>
+        <h:form>
+            <h:dataTable value="#{konserBean.list}" var="entity">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                        #{entity.id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">KONSER ADI</f:facet>
+                        #{entity.adı}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">SANATÇI ADI</f:facet>
+                        #{entity.sanatçı}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">MEKAN </f:facet>
+                        #{entity.mekan}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">TARİH</f:facet>
+                        #{entity.tarih}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">ADMİNİSTRATOR</f:facet>
+                    <h:commandButton  action="#{konserBean.delete(entity)}" value="DELETE"/>
+                    <h:commandButton  action="#{konserBean.setEntity(entity)}" value="UPDATE"/>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+        </ui:define>
+  
+</ui:composition>
