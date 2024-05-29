@@ -6,6 +6,7 @@ package controller;
 
 import dao.BiletDAO;
 import entity.Bilet;
+import entity.Kullanıcı;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -65,6 +66,7 @@ public class BiletBean implements Serializable {
     public String biletoluştur(){
         return "/kullanıcı/bilet-succeed";
     }
+
 
     
 }

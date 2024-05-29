@@ -9,32 +9,32 @@ import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author yaren
  */
-public class MekanDAO extends DBConnection{
+public class MekanDAO extends DBConnection {
+
     private Connection db;
- 
 
     public Connection getDb() {
-        if(this.db==null){
-            db=this.connect();
-            
+        if (this.db == null) {
+            db = this.connect();
+
         }
         return db;
     }
-     
+
     public List<Mekan> getMekanList() {
-        List<Mekan> etkinlikList = new ArrayList();
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "select * from mekan";
-            ResultSet rs = st.executeQuery(query);
+        List<Mekan> etkinlikList = new ArrayList<>();
+        String query = "SELECT * FROM mekan";
+        try (PreparedStatement st = this.getDb().prepareStatement(query); ResultSet rs = st.executeQuery()) {
+
             while (rs.next()) {
                 etkinlikList.add(new Mekan(
                         rs.getInt("mekan_id"),
-                        rs.getString("adı")    ,
+                        rs.getString("adı"),
                         rs.getString("adres"),
                         rs.getInt("kapasite")
                 ));
@@ -44,59 +44,56 @@ public class MekanDAO extends DBConnection{
         }
         return etkinlikList;
     }
-    
-    
-    //CREATE İŞLEMİ
-    public void MekanOluştur(Mekan e){
-        try{
-           Statement st=this.getDb().createStatement();
-           String query="insert into mekan(adı,adres,kapasite) values('"+e.getMekan_adi()+"','"+e.getAdres()+"','"+e.getKapasite()+"')";
-           st.executeUpdate(query);
-        }
-        catch(Exception ex){
+
+    public void MekanOluştur(Mekan e) {
+        String query = "INSERT INTO mekan (adı, adres, kapasite) VALUES (?, ?, ?)";
+        try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+            st.setString(1, e.getMekan_adi());
+            st.setString(2, e.getAdres());
+            st.setInt(3, e.getKapasite());
+            st.executeUpdate();
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
-    
-    
-    public Mekan findByID(int id){
-        Mekan c=null;
-         try{
-           Statement st=this.connect().createStatement();
-           String query="select * from mekan where mekan_id="+id;
-           ResultSet rs=st.executeQuery(query);
-           
-           while(rs.next()){
-               c=new Mekan(rs.getInt("mekan_id"),rs.getString("adı"),rs.getString("adres"),rs.getInt("kapasite"));
-           }
-          
-        }catch(Exception ex){
+
+    public Mekan findByID(int id) {
+        Mekan c = null;
+        String query = "SELECT * FROM mekan WHERE mekan_id = ?";
+        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    c = new Mekan(rs.getInt("mekan_id"), rs.getString("adı"), rs.getString("adres"), rs.getInt("kapasite"));
+                }
+            }
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return c;
     }
-    
- 
-    public void delete(Mekan c){
-         try{
-           Statement st=this.connect().createStatement();
-           String query="delete from mekan where mekan_id="+c.getMekan_id();
-           
-           st.executeUpdate(query);
-           
-        }catch(Exception ex){
+
+    public void delete(Mekan c) {
+        String query = "DELETE FROM mekan WHERE mekan_id = ?";
+        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+            st.setInt(1, c.getMekan_id());
+            st.executeUpdate();
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
-    public void update(Mekan c){
-         try{
-           Statement st=this.connect().createStatement();
-           String query="update mekan set adı='"+c.getMekan_adi()+"',adres='"+c.getAdres()+"',kapasite='"+c.getKapasite()+"' where mekan_id="+c.getMekan_id();
-           
-           st.executeUpdate(query);
-           
-        }catch(Exception ex){
+
+    public void update(Mekan c) {
+        String query = "UPDATE mekan SET adı = ?, adres = ?, kapasite = ? WHERE mekan_id = ?";
+        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+            st.setString(1, c.getMekan_adi());
+            st.setString(2, c.getAdres());
+            st.setInt(3, c.getKapasite());
+            st.setInt(4, c.getMekan_id());
+            st.executeUpdate();
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
+
 }

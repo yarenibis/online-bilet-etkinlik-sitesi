@@ -1,5 +1,3 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -7,24 +5,47 @@
       template='/template.xhtml'>
 
     <ui:define name='menu2'></ui:define>
+    <ui:define name='menu3'></ui:define>
+  
     
     <ui:define name='content1'>
-        <h:form id="loginForm">
-        <h:panelGrid columns="2">
-            <div class="mb-3">
-                <label class="form-label">MAIL</label>
-                <h:inputText styleClass="form-control" id="mail" value="#{kullanıcıBean.entity.email}" required="true" />
-            </div>
-           
-            <div class="mb-3">
-                <label class="form-label">ŞİFRE</label>
-                <h:inputText styleClass="form-control" id="şifre" value="#{kullanıcıBean.entity.şifre}" required="true" />
-            </div>
-           
-        </h:panelGrid>
-            <h:commandButton styleClass="btn btn-primary" value="Giriş Yap" action="#{kullanıcıBean.giriş(kullanıcıBean.entity)}" />
-        <h:messages globalOnly="true" style="color: red;" />
-    </h:form>
-        </ui:define>
-   
+        <div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+            <div class="col-md-3">
+                <h:form id="loginForm" onsubmit="return validateForm();">
+                    <h:panelGrid columns="2" columnClasses="col-sm-3">
+                        <div class="mb-3">
+                            <label for="mail" class="form-label">MAIL</label>
+                            <h:inputText styleClass="form-control" id="mail" value="#{kullanıcıBean.entity.email}" required="true" />
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="şifre" class="form-label">ŞİFRE</label>
+                            <h:inputSecret styleClass="form-control" id="şifre" value="#{kullanıcıBean.entity.şifre}" required="true" />
+                        </div>
+                    </h:panelGrid>
+                    <div id="errorMessage" style="color: red; font-weight: bold; font-size: 14px; display: none;"></div>
+                    <div class="text-center mt-3">
+                        <h:commandButton styleClass="btn btn-primary btn-lg" value="Giriş Yap" action="#{kullanıcıBean.giriş()}" />
+                    </div>
+                    
+                    <h:messages globalOnly="true" style="color: red; font-weight: bold; font-size: 14px; text-align: center;" />
+                </h:form>
+            
+            
+<script>
+function validateForm() {
+    var mail = document.getElementById('loginForm:mail').value;
+    var şifre = document.getElementById('loginForm:şifre').value;
+    if (mail === "" || şifre === "") {
+        var errorMessage = document.getElementById('errorMessage');
+        errorMessage.innerHTML = "Mail ve şifre alanları boş bırakılamaz!";
+        errorMessage.style.display = "block"; // Hata mesajını görünür yap
+        return false;
+    }
+    return true;
+}
+</script>
+                </div>
+        </div>
+    </ui:define>
 </ui:composition>

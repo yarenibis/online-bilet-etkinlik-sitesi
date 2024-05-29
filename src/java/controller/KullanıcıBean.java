@@ -1,23 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package controller;
 
 import dao.KullanıcıDAO;
 import entity.Kullanıcı;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
-
-
-/**
- *
- * @author yaren
- */
 @Named(value = "kullanıcıBean")
 @SessionScoped
 public class KullanıcıBean implements Serializable {
@@ -26,76 +17,57 @@ public class KullanıcıBean implements Serializable {
     private KullanıcıDAO dao;
     private List<Kullanıcı> list;
 
-   
-    
-    private String email;
-    private String şifre;
-   
-    
-   public void clear(){
-        entity=new Kullanıcı();
-    }
-   
-   
-    public void kullanıcıkayıt(){
-         this.getDao().kullanıcıkayıt(entity);
-         entity=new Kullanıcı();
-     }
-    
-    public void create(){
-        this.getDao().create(entity);
-         entity=new Kullanıcı();
-    }
-    
-    public void update(){
-        this.getDao().adminupdate(entity);
-        entity=new Kullanıcı();
-    }
-    
-    public void delete(Kullanıcı c){
-        this.getDao().admindelete(c);
-        entity=new Kullanıcı();
-    }
-     
-     
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    
-
-    public String getŞifre() {
-        return şifre;
-    }
-
-    public void setŞifre(String şifre) {
-        this.şifre = şifre;
-    }
-  
-    
     public KullanıcıBean() {
+        entity = new Kullanıcı();
     }
-   
 
- 
-    public String giriş(Kullanıcı selectedkullanıcı) {
-         if (this.getDao().kullanıcıGirişi(entity.getEmail(), entity.getŞifre())) {
-        this.entity = this.getDao().findByMail(entity.getEmail());
-        return "/kullanıcı/etkinlik";
-    } else {
-        return "/kullanıcı/kayıt";
+    public void clear() {
+        entity = new Kullanıcı();
     }
+
+    public void kullanıcıkayıt() {
+        this.getDao().kullanıcıkayıt(entity);
+        entity = new Kullanıcı();
     }
-     
+
+    public void create() {
+        this.getDao().create(entity);
+        entity = new Kullanıcı();
+    }
+
+    public void update() {
+        this.getDao().adminupdate(entity);
+        entity = new Kullanıcı();
+    }
+
+    public void delete(Kullanıcı c) {
+        this.getDao().admindelete(c);
+        entity = new Kullanıcı();
+    }
+
+    public String giriş() {
+        Kullanıcı existingUser = this.getDao().findByMail(entity.getEmail());
+       
+        if (existingUser == null) {
+            // Kullanıcı mail adresi kayıtlı değilse kayıt sayfasına yönlendir
+            return "/kullanıcı/kayıt";
+        } else if (!existingUser.getŞifre().equals(entity.getŞifre())) {
+            // Şifre yanlışsa hata mesajı göster
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Şifre yanlış.", null));
+            return null;
+        }
+        // Giriş başarılıysa, kullanıcıyı etkinlik sayfasına yönlendir
+         this.entity=this.getDao().findByMail(this.getEmail());
+         return "/kullanıcı/etkinlik";
+    }
+
+
+    
     
     public Kullanıcı getEntity() {
-        if(this.entity==null){
-            entity=new Kullanıcı();
-            
+        if (this.entity == null) {
+            entity = new Kullanıcı();
         }
         return entity;
     }
@@ -105,8 +77,8 @@ public class KullanıcıBean implements Serializable {
     }
 
     public KullanıcıDAO getDao() {
-        if(this.dao==null){
-            dao=new KullanıcıDAO();
+        if (this.dao == null) {
+            dao = new KullanıcıDAO();
         }
         return dao;
     }
@@ -115,17 +87,28 @@ public class KullanıcıBean implements Serializable {
         this.dao = dao;
     }
 
-
-   
-    
     public List<Kullanıcı> getList() {
-        this.list=this.getDao().getList();
+        this.list = this.getDao().getList();
         return list;
     }
 
     public void setList(List<Kullanıcı> list) {
         this.list = list;
     }
-    
-    
+
+    public String getEmail() {
+        return entity.getEmail();
+    }
+
+    public void setEmail(String email) {
+        entity.setEmail(email);
+    }
+
+    public String getŞifre() {
+        return entity.getŞifre();
+    }
+
+    public void setŞifre(String şifre) {
+        entity.setŞifre(şifre);
+    }
 }

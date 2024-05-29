@@ -15,7 +15,7 @@
     
      <ui:define name='content1'>
         <h:form>
-            <h:inputText value="#{sinemaBean.searchKeyword}" />
+            <h:inputText value="#{sinemaBean.searchKeyword}" styleClass="table table-striped table-hover"/>
             <h:commandButton value="Ara" action="#{sinemaBean.searchSinema()}" />
 
             <h:dataTable value="#{sinemaBean.list}" var="sinema">
@@ -34,7 +34,7 @@
                 
                 <h:column>
                     <f:facet name="header">Seç</f:facet>
-                    <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema)}"  />
+                    <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema,kullanıcıBean.entity)}"  />
                 </h:column>
             </h:dataTable>
         </h:form>
@@ -56,7 +56,7 @@
 
             <h:column>
                 <f:facet name="header">Seç</f:facet>
-                <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema)}"  />
+                <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(sinema,kullanıcıBean.entity)}"  />
             </h:column>
         </h:dataTable>
         </h:form>

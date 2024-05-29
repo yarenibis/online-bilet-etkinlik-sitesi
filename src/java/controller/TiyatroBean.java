@@ -4,7 +4,11 @@
  */
 package controller;
 
+import dao.BiletDAO;
+import dao.KullanıcıDAO;
 import dao.TiyatroDAO;
+import entity.Bilet;
+import entity.Kullanıcı;
 import entity.Tiyatro;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -16,38 +20,61 @@ import java.util.List;
 @SessionScoped
 public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements Serializable {
 
-    private String searchKeyword;
-    private Tiyatro selectedTiyatro;
-    private List<Tiyatro> filteredTiyatroList;
-    
-     private Tiyatro entity;
+    private Tiyatro entity;
     private TiyatroDAO dao;
     private List<Tiyatro> list;
-
-    public Tiyatro getEntity() {
-        if(this.entity==null){
-            this.entity=new Tiyatro();
-        }
-        return entity;
+    
+    private String searchKeyword;
+    private List<Tiyatro> filteredTiyatroList;
+    
+    private KullanıcıDAO kdao;
+    private TiyatroDAO edao;
+    private BiletDAO bdao;
+    
+    
+    private int page=1;
+    private int pageSize=5;
+    private int pageCount;
+    
+    public void next(){
+        this.page++;
+    }
+    public void previous(){
+        this.page--;
     }
 
-    public void setEntity(Tiyatro entity) {
-        this.entity = entity;
+    public int getPage() {
+        return page;
     }
 
-    public TiyatroDAO getDao() {
-        if(this.dao==null){
-            this.dao=new TiyatroDAO();
-        }
-        return dao;
+    public void setPage(int page) {
+        this.page = page;
     }
 
-    public void setDao(TiyatroDAO dao) {
-        this.dao = dao;
+    public int getPageSize() {
+        return pageSize;
     }
 
-  
- public void clear() {
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageCount() {
+        this.pageCount=(int)Math.ceil(this.getDao().count()/(double)pageSize);
+        return pageCount;
+    }
+
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+    
+    
+
+     public TiyatroBean() {
+         super(Tiyatro.class, TiyatroDAO.class);
+    }
+
+    public void clear() {
         entity = new Tiyatro();
     }
 
@@ -65,29 +92,52 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
         this.getDao().delete(c);
         entity = new Tiyatro();
     }
-  
-    
-    
     
 
-    public TiyatroBean() {
-        super(Tiyatro.class, TiyatroDAO.class);
+   
+    
+
+    public BiletDAO getBdao() {
+        if (this.bdao == null) {
+            bdao = new BiletDAO();
+        }
+        return bdao;
     }
 
+    public void setBdao(BiletDAO bdao) {
+        this.bdao = bdao;
+    }
+
+    public KullanıcıDAO getKdao() {
+        if (this.kdao == null) {
+            this.kdao = new KullanıcıDAO();
+        }
+        return kdao;
+    }
+
+    public void setKdao(KullanıcıDAO kdao) {
+        this.kdao = kdao;
+    }
+
+    public TiyatroDAO getEdao() {
+        if (this.edao == null) {
+            this.edao = new TiyatroDAO();
+        }
+        return edao;
+    }
+
+    public void setEdao(TiyatroDAO edao) {
+        this.edao = edao;
+    }
+
+    
+    
     public String getSearchKeyword() {
         return searchKeyword;
     }
 
     public void setSearchKeyword(String searchKeyword) {
         this.searchKeyword = searchKeyword;
-    }
-
-    public Tiyatro getSelectedTiyatro() {
-        return selectedTiyatro;
-    }
-
-    public void setSelectedTiyatro(Tiyatro selectedTiyatro) {
-        this.selectedTiyatro = selectedTiyatro;
     }
 
     public List<Tiyatro> getFilteredTiyatroList() {
@@ -98,22 +148,61 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
         this.filteredTiyatroList = filteredTiyatroList;
     }
 
+   
+
+    public String selectTiyatro(Tiyatro tiyatro,Kullanıcı kullanıcı) {
+        this.entity = tiyatro;  
+         this.entity = this.getDao().findByID(entity.getId());
+        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+        
+        Bilet bilet = new Bilet();
+        bilet.setEtkinlik_id(this.entity.getId()); 
+        bilet.setKullanıcı_id(kullanıcı_id); 
+       
+        this.getBdao().createBilet(bilet);
+
+        return "/kullanıcı/bilet";
+    }
+
+    
     public void searchTiyatro() {
-        filteredTiyatroList = new ArrayList<>();
-        for (Tiyatro tiyatro : getList()) {
-            if (tiyatro.getAdı().contains(searchKeyword)) {
-                filteredTiyatroList.add(tiyatro);
+        filteredTiyatroList = new ArrayList<>(); 
+        for (Tiyatro tiyatro : list) {
+            if (tiyatro.getAdı().contains(searchKeyword) ) {
+                filteredTiyatroList.add(tiyatro); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }
     }
 
-    public String selectTiyatro(Tiyatro tiyatro) {
-        setSelectedTiyatro(tiyatro);
-        return "/panel/bilet?faces-redirect=true";
+    public Tiyatro getEntity() {
+        if (this.entity == null) {
+            entity = new Tiyatro();
+        }
+        return entity;
+    }
+
+    public void setEntity(Tiyatro entity) {
+        this.entity = entity;
+    }
+
+    public TiyatroDAO getDao() {
+        if (this.dao == null) {
+            dao = new TiyatroDAO();
+        }
+        return dao;
+    }
+
+    public void setDao(TiyatroDAO dao) {
+        this.dao = dao;
     }
 
     public List<Tiyatro> getList() {
-        return getDao().list();
+        this.list = this.getDao().list();
+        return list;
+    }
+
+    public void setList(List<Tiyatro> list) {
+        this.list = list;
     }
 }
 

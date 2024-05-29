@@ -4,8 +4,12 @@
  */
 package controller;
 
+import dao.BiletDAO;
 import dao.KonserDAO;
+import dao.KullanıcıDAO;
+import entity.Bilet;
 import entity.Konser;
+import entity.Kullanıcı;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
@@ -17,38 +21,61 @@ import java.util.List;
 @SessionScoped
 public class KonserBean extends BaseController<Konser, KonserDAO> implements Serializable {
 
-    private String searchKeyword;
-    private Konser selectedKonser;
-    private List<Konser> filteredKonserList;
-    
-     private Konser entity;
+   private Konser entity;
     private KonserDAO dao;
     private List<Konser> list;
-
-    public Konser getEntity() {
-        if(this.entity==null){
-            this.entity=new Konser();
-        }
-        return entity;
+    
+    private String searchKeyword;
+    private List<Konser> filteredKonserList;
+    
+    private KullanıcıDAO kdao;
+    private KonserDAO edao;
+    private BiletDAO bdao;
+    
+    
+    private int page=1;
+    private int pageSize=5;
+    private int pageCount;
+    
+    public void next(){
+        this.page++;
+    }
+    public void previous(){
+        this.page--;
     }
 
-    public void setEntity(Konser entity) {
-        this.entity = entity;
+    public int getPage() {
+        return page;
     }
 
-    public KonserDAO getDao() {
-        if(this.dao==null){
-            this.dao=new KonserDAO();
-        }
-        return dao;
+    public void setPage(int page) {
+        this.page = page;
     }
 
-    public void setDao(KonserDAO dao) {
-        this.dao = dao;
+    public int getPageSize() {
+        return pageSize;
     }
 
-  
- public void clear() {
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageCount() {
+        this.pageCount=(int)Math.ceil(this.getDao().count()/(double)pageSize);
+        return pageCount;
+    }
+
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+    
+    
+
+     public KonserBean() {
+          super(Konser.class, KonserDAO.class);
+    }
+
+    public void clear() {
         entity = new Konser();
     }
 
@@ -66,25 +93,52 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
         this.getDao().delete(c);
         entity = new Konser();
     }
+    
 
-    public KonserBean() {
-        super(Konser.class, KonserDAO.class);
+  
+    
+
+    public BiletDAO getBdao() {
+        if (this.bdao == null) {
+            bdao = new BiletDAO();
+        }
+        return bdao;
     }
 
+    public void setBdao(BiletDAO bdao) {
+        this.bdao = bdao;
+    }
+
+    public KullanıcıDAO getKdao() {
+        if (this.kdao == null) {
+            this.kdao = new KullanıcıDAO();
+        }
+        return kdao;
+    }
+
+    public void setKdao(KullanıcıDAO kdao) {
+        this.kdao = kdao;
+    }
+
+    public KonserDAO getEdao() {
+        if (this.edao == null) {
+            this.edao = new KonserDAO();
+        }
+        return edao;
+    }
+
+    public void setEdao(KonserDAO edao) {
+        this.edao = edao;
+    }
+
+    
+    
     public String getSearchKeyword() {
         return searchKeyword;
     }
 
     public void setSearchKeyword(String searchKeyword) {
         this.searchKeyword = searchKeyword;
-    }
-
-    public Konser getSelectedKonser() {
-        return selectedKonser;
-    }
-
-    public void setSelectedKonser(Konser selectedKonser) {
-        this.selectedKonser = selectedKonser;
     }
 
     public List<Konser> getFilteredKonserList() {
@@ -95,22 +149,61 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
         this.filteredKonserList = filteredKonserList;
     }
 
+   
+
+    public String selectKonser(Konser konser,Kullanıcı kullanıcı) {
+        this.entity = konser;  
+         this.entity = this.getDao().findByID(entity.getId());
+        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+        
+        Bilet bilet = new Bilet();
+        bilet.setEtkinlik_id(this.entity.getId()); 
+        bilet.setKullanıcı_id(kullanıcı_id); 
+       
+        this.getBdao().createBilet(bilet);
+
+        return "/kullanıcı/bilet";
+    }
+
+    
     public void searchKonser() {
-        filteredKonserList = new ArrayList<>();
-        for (Konser konser : getList()) {
+        filteredKonserList = new ArrayList<>(); 
+        for (Konser konser : list) {
             if (konser.getAdı().contains(searchKeyword)) {
-                filteredKonserList.add(konser);
+                filteredKonserList.add(konser); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }
     }
 
-    public String selectKonser(Konser konser) {
-        setSelectedKonser(konser);
-        return "/panel/bilet?faces-redirect=true";
+    public Konser getEntity() {
+        if (this.entity == null) {
+            entity = new Konser();
+        }
+        return entity;
+    }
+
+    public void setEntity(Konser entity) {
+        this.entity = entity;
+    }
+
+    public KonserDAO getDao() {
+        if (this.dao == null) {
+            dao = new KonserDAO();
+        }
+        return dao;
+    }
+
+    public void setDao(KonserDAO dao) {
+        this.dao = dao;
     }
 
     public List<Konser> getList() {
-        return getDao().list();
+        this.list = this.getDao().list();
+        return list;
+    }
+
+    public void setList(List<Konser> list) {
+        this.list = list;
     }
 }
 

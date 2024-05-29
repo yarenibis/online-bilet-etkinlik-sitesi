@@ -47,6 +47,10 @@ public class NavigationBean implements Serializable {
         return page + "?faces-redirect=true";
     }
     
+    
+   
+
+    
 }
 
  

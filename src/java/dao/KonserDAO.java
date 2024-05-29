@@ -5,84 +5,119 @@
 package dao;
 
 import entity.Konser;
-import entity.Kullanıcı;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import util.DBConnection;
 
-public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser>{
+public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
+
     private Connection db;
 
     public Connection getDb() {
-        if(this.db==null){
-            db=this.connect();
+        if (this.db == null) {
+            db = this.connect();
         }
         return db;
     }
 
     @Override
     public void create(Konser k) {
-        try{
-            Statement st=this.getDb().createStatement();
-            String query="INSERT INTO konser(konser_adı,mekan,tarih,sanatçı) VALUES('"  + k.getAdı() + "','" + k.getMekan() + "','"  + k.getTarih() + "',,'"  + k.getSanatçı() + "')";
-            st.executeUpdate(query);
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
+        String query = "INSERT INTO konser (konser_adı, mekan, tarih, sanatçı) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setString(1, k.getAdı());
+            preparedStatement.setString(2, k.getMekan());
+            preparedStatement.setString(3, k.getTarih());
+            preparedStatement.setString(4, k.getSanatçı());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
     @Override
     public void delete(Konser k) {
-        try{
-            Statement st=this.getDb().createStatement();
-            String query="DELETE FROM konser WHERE konser_id=" + k.getId();
-            st.executeUpdate(query);
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
+        String query = "DELETE FROM konser WHERE konser_id = ?";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, k.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
     @Override
     public void update(Konser k) {
-        try{
-            Statement st=this.getDb().createStatement();
-            String query="UPDATE konser SET konser_adı='" + k.getAdı() + "', mekan='" + k.getMekan() + "',  tarih='" + k.getTarih() + "',sanatçı='" + k.getSanatçı() + "' WHERE konser_id=" + k.getId();
-            st.executeUpdate(query);
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
+        String query = "UPDATE konser SET konser_adı = ?, mekan = ?, tarih = ?, sanatçı = ? WHERE konser_id = ?";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setString(1, k.getAdı());
+            preparedStatement.setString(2, k.getMekan());
+            preparedStatement.setString(3, k.getTarih());
+            preparedStatement.setString(4, k.getSanatçı());
+            preparedStatement.setInt(5, k.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
     @Override
     public List<Konser> list() {
-        List<Konser> tiyatroList = new ArrayList();
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "select * from konser";
-            ResultSet rs = st.executeQuery(query);
-            System.out.println("*************************"+query);
+        List<Konser> konserList = new ArrayList<>();
+        String query = "SELECT * FROM konser";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+
             while (rs.next()) {
-                tiyatroList.add(new Konser(
+                konserList.add(new Konser(
                         rs.getInt("konser_id"),
                         rs.getString("konser_adı"),
                         rs.getString("mekan"),
                         rs.getString("tarih"),
                         rs.getString("sanatçı")
                 ));
-                
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return tiyatroList;
+        return konserList;
     }
-  
-    
 
+    public Konser findByID(int id) {
+        Konser konser = null;
+        String query = "SELECT * FROM konser WHERE konser_id = ?";
+        try (PreparedStatement preparedStatement = this.connect().prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                konser = new Konser(
+                        rs.getInt("konser_id"),
+                        rs.getString("konser_adı"),
+                        rs.getString("mekan"),
+                        rs.getString("tarih"),
+                        rs.getString("sanatçı")
+                );
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return konser;
+    }
     
+    
+     public int count() {
+        int count = 0;
+        String query = "SELECT COUNT(etkinlik_id) AS total FROM etkinlik";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+
 }
-

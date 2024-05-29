@@ -4,8 +4,12 @@
  */
 package controller;
 
+import dao.BiletDAO;
 import dao.FestivalDAO;
+import dao.KullanıcıDAO;
+import entity.Bilet;
 import entity.Festival;
+import entity.Kullanıcı;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -16,39 +20,62 @@ import java.util.List;
 @SessionScoped
 public class FestivalBean extends BaseController<Festival, FestivalDAO> implements Serializable {
 
-    private String searchKeyword;
-    private Festival selectedFestival;
-    private List<Festival> filteredFestivalList;
 
-    
-     private Festival entity;
+    private Festival entity;
     private FestivalDAO dao;
     private List<Festival> list;
-
-    public Festival getEntity() {
-        if(this.entity==null){
-            this.entity=new Festival();
-        }
-        return entity;
+    
+    private String searchKeyword;
+    private List<Festival> filteredFestivalList;
+    
+    private KullanıcıDAO kdao;
+    private FestivalDAO edao;
+    private BiletDAO bdao;
+    
+    
+    private int page=1;
+    private int pageSize=5;
+    private int pageCount;
+    
+    public void next(){
+        this.page++;
+    }
+    public void previous(){
+        this.page--;
     }
 
-    public void setEntity(Festival entity) {
-        this.entity = entity;
+    public int getPage() {
+        return page;
     }
 
-    public FestivalDAO getDao() {
-        if(this.dao==null){
-            this.dao=new FestivalDAO();
-        }
-        return dao;
+    public void setPage(int page) {
+        this.page = page;
     }
 
-    public void setDao(FestivalDAO dao) {
-        this.dao = dao;
+    public int getPageSize() {
+        return pageSize;
     }
 
-  
- public void clear() {
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageCount() {
+        this.pageCount=(int)Math.ceil(this.getDao().count()/(double)pageSize);
+        return pageCount;
+    }
+
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+    
+    
+
+     public FestivalBean() {
+          super(Festival.class, FestivalDAO.class);
+    }
+
+    public void clear() {
         entity = new Festival();
     }
 
@@ -66,25 +93,52 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
         this.getDao().delete(c);
         entity = new Festival();
     }
+    
+
   
-    public FestivalBean() {
-        super(Festival.class, FestivalDAO.class);
+    
+
+    public BiletDAO getBdao() {
+        if (this.bdao == null) {
+            bdao = new BiletDAO();
+        }
+        return bdao;
     }
 
+    public void setBdao(BiletDAO bdao) {
+        this.bdao = bdao;
+    }
+
+    public KullanıcıDAO getKdao() {
+        if (this.kdao == null) {
+            this.kdao = new KullanıcıDAO();
+        }
+        return kdao;
+    }
+
+    public void setKdao(KullanıcıDAO kdao) {
+        this.kdao = kdao;
+    }
+
+    public FestivalDAO getEdao() {
+        if (this.edao == null) {
+            this.edao = new FestivalDAO();
+        }
+        return edao;
+    }
+
+    public void setEdao(FestivalDAO edao) {
+        this.edao = edao;
+    }
+
+    
+    
     public String getSearchKeyword() {
         return searchKeyword;
     }
 
     public void setSearchKeyword(String searchKeyword) {
         this.searchKeyword = searchKeyword;
-    }
-
-    public Festival getSelectedFestival() {
-        return selectedFestival;
-    }
-
-    public void setSelectedFestival(Festival selectedFestival) {
-        this.selectedFestival = selectedFestival;
     }
 
     public List<Festival> getFilteredFestivalList() {
@@ -95,22 +149,64 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
         this.filteredFestivalList = filteredFestivalList;
     }
 
+   
+
+    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
+        this.entity = festival;  
+         this.entity = this.getDao().findByID(entity.getFestival_id());
+        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+        
+        Bilet bilet = new Bilet();
+        bilet.setEtkinlik_id(this.entity.getFestival_id()); 
+        bilet.setKullanıcı_id(kullanıcı_id); 
+       
+        this.getBdao().createBilet(bilet);
+
+        return "/kullanıcı/bilet";
+    }
+
+    
     public void searchFestival() {
-        filteredFestivalList = new ArrayList<>();
-        for (Festival festival : getList()) {
+        filteredFestivalList = new ArrayList<>(); 
+        for (Festival festival : list) {
             if (festival.getFestival_adi().contains(searchKeyword)) {
-                filteredFestivalList.add(festival);
+                filteredFestivalList.add(festival); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }
     }
 
-    public String selectFestival(Festival festival) {
-        setSelectedFestival(festival);
-        return "/panel/bilet?faces-redirect=true";
+    public Festival getEntity() {
+        if (this.entity == null) {
+            entity = new Festival();
+        }
+        return entity;
+    }
+
+    public void setEntity(Festival entity) {
+        this.entity = entity;
+    }
+
+    public FestivalDAO getDao() {
+        if (this.dao == null) {
+            dao = new FestivalDAO();
+        }
+        return dao;
+    }
+
+    public void setDao(FestivalDAO dao) {
+        this.dao = dao;
     }
 
     public List<Festival> getList() {
-        return getDao().list();
+        this.list = this.getDao().list();
+        return list;
     }
+
+    public void setList(List<Festival> list) {
+        this.list = list;
+    }
+
 }
+
+
 

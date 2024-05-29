@@ -18,39 +18,39 @@ import util.DBConnection;
  *
  * @author yaren
  */
-public class EtkinlikDAO extends DBConnection{
-     private Connection db;
-     private MekanDAO mekandao;
-      private YetkiDAO yetkidao;
+public class EtkinlikDAO extends DBConnection {
 
-
+    private Connection db;
+    private MekanDAO mekandao;
+    private YetkiDAO yetkidao;
 
     public MekanDAO getMekandao() {
-        if(mekandao==null){
-            mekandao=new MekanDAO();
+        if (mekandao == null) {
+            mekandao = new MekanDAO();
         }
         return mekandao;
     }
 
- 
     public Connection getDb() {
-        if(this.db==null){
-            db=this.connect();
-            
+        if (this.db == null) {
+            db = this.connect();
+
         }
         return db;
     }
-     
-    
-    public List<Etkinlik> getEtkinlikList(int page,int pageSize) {
-        List<Etkinlik> etkinlikList = new ArrayList();
-        int start=(page-1)*pageSize;
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "select * from etkinlik order by etkinlik_id asc LIMIT "+pageSize+" OFFSET "+start+"";
-            ResultSet rs = st.executeQuery(query);
+
+    public List<Etkinlik> getEtkinlikList(int page, int pageSize) {
+        List<Etkinlik> etkinlikList = new ArrayList<>();
+        int start = (page - 1) * pageSize;
+        String query = "SELECT * FROM etkinlik ORDER BY etkinlik_id ASC LIMIT ? OFFSET ?";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, pageSize);
+            preparedStatement.setInt(2, start);
+            ResultSet rs = preparedStatement.executeQuery();
+
             while (rs.next()) {
-                Mekan m=this.getMekandao().findByID(rs.getInt("mekan_id"));
+                Mekan m = this.getMekandao().findByID(rs.getInt("mekan_id"));
                 etkinlikList.add(new Etkinlik(rs.getInt("etkinlik_id"),
                         rs.getString("etkinlik_adı"),
                         rs.getString("açıklama"),
@@ -58,197 +58,155 @@ public class EtkinlikDAO extends DBConnection{
                         rs.getString("tarih_saat")
                 ));
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return etkinlikList;
     }
-    
-    
-      public int count() {
-          int count=0;
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "select count(etkinlik_id) as total from etkinlik ";
-            ResultSet rs = st.executeQuery(query);
-            rs.next();
-            count=rs.getInt("total");
-            
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+
+    public int count() {
+        int count = 0;
+        String query = "SELECT COUNT(etkinlik_id) AS total FROM etkinlik";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return count;
     }
-    
-    
-    
-//     public List<Etkinlik> adminGetetkinlik() {
-//        List<Etkinlik> etkinlikList = new ArrayList();
-//        try {
-//            Statement st = this.getDb().createStatement();
-//            String query = "select * from etkinlik";
-//            ResultSet rs = st.executeQuery(query);
-//            while (rs.next()) {
-//                Mekan m=this.getMekandao().findByID(rs.getInt("mekan_id"));
-//                etkinlikList.add(new Etkinlik(rs.getInt("etkinlik_id"),
-//                        rs.getString("etkinlik_adı"),
-//                        rs.getString("açıklama"),
-//                        m,
-//                        rs.getString("tarih_saat"),
-//                        this.admingetkullanıcılar(rs.getInt("etkinlik_id"))
-//                ));
-//            }
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//        return etkinlikList;
-//    }
-    
-     
-     
-//    public List<Kullanıcı> admingetkullanıcılar(int etkinlik_id) {
-//        List<Kullanıcı> kullist = new ArrayList();
-//        try {
-//            Statement st = this.connect().createStatement();
-//            String query = "select * from kullanıcı where kullanıcı_id in(select kullanıcı_id from katılımcı_bilgisi where etkinlik_id="+etkinlik_id+")";
-//
-//            ResultSet rs = st.executeQuery(query);
-//
-//            while (rs.next()) {
-//                Yetki y = this.getYetkidao().findByID(rs.getInt("yetki_id"));
-//                kullist.add(new Kullanıcı(rs.getInt("kullanıcı_id")
-//                        , rs.getString("adı")
-//                        , rs.getString("soyadı")
-//                        , rs.getString("email")
-//                        , rs.getString("şifre")
-//                        , y));
-//            }
-//
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//        return kullist;
-//    }
-//    
-    
-    
-    //CREATE İŞLEMİ
-    public void EtkinlikOluştur(Etkinlik e){
-        try{
-           Statement st=this.getDb().createStatement();
-           String query="insert into etkinlik(etkinlik_adı,açıklama,mekan_id,tarih_saat) values('"+e.getAdı()+"','"+e.getAçıklama()+"','"+e.getMekan().getMekan_id()+"','"+e.getTarih_saat()+"')";
-           st.executeUpdate(query);
-            
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
+
+    public void EtkinlikOluştur(Etkinlik e) {
+        String query = "INSERT INTO etkinlik (etkinlik_adı, açıklama, mekan_id, tarih_saat) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setString(1, e.getAdı());
+            preparedStatement.setString(2, e.getAçıklama());
+            preparedStatement.setInt(3, e.getMekan().getMekan_id());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-    
-   
-    
-    public void admincreate(Etkinlik e){
-        try{
-           Statement st=this.getDb().createStatement();
-           String query="insert into etkinlik(etkinlik_adı,açıklama,mekan_id,tarih_saat) values('"+e.getAdı()+"','"+e.getAçıklama()+"','"+e.getMekan().getMekan_id()+"','"+e.getTarih_saat()+"')";
-           st.executeUpdate(query);
-           ResultSet rs=st.executeQuery("select max(etkinlik_id) as mid from etkinlik");
-           rs.next();
-           
-           int et_id=rs.getInt("mid");
-           
-           for(Kullanıcı k:e.getKlist()){
-               query="insert into katılımcı_bilgisi(etkinlik_id,kullanıcı_id) values("+et_id+","+k.getKullanıcı_id()+")";
-               st.executeUpdate(query);
-           }
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
-        }
-    }
-    
-    
- 
-     public void adminupdate(Etkinlik c){
-         try{
-           Statement st=this.connect().createStatement();
-           String query="update etkinlik set etkinlik_adı='"+c.getAdı()+"',açıklama='"+c.getAçıklama()+"',mekan_id='"+c.getMekan().getMekan_id()+"',tarih_saat='"+c.getTarih_saat()+"' where etkinlik_id="+c.getId();
-           
-           st.executeUpdate(query);
-           st.executeUpdate("delete  from katılımcı_bilgisi where etkinlik_id= "+c.getId());
-           
-         
-           
-           for(Kullanıcı k:c.getKlist()){
-               query="insert into katılımcı_bilgisi(etkinlik_id,kullanıcı_id) values("+c.getId()+","+k.getKullanıcı_id()+")";
-               st.executeUpdate(query);
-           }
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
+
+    public void admincreate(Etkinlik e) {
+        String query = "INSERT INTO etkinlik (etkinlik_adı, açıklama, mekan_id, tarih_saat) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, e.getAdı());
+            preparedStatement.setString(2, e.getAçıklama());
+            preparedStatement.setInt(3, e.getMekan().getMekan_id());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                int et_id = rs.getInt(1);
+                String participantQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+
+                try (PreparedStatement participantStatement = conn.prepareStatement(participantQuery)) {
+                    for (Kullanıcı k : e.getKlist()) {
+                        participantStatement.setInt(1, et_id);
+                        participantStatement.setInt(2, k.getKullanıcı_id());
+                        participantStatement.executeUpdate();
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-    
-    
-     
-     public void admindelete(Etkinlik c){
-         try{
-           Statement st=this.connect().createStatement();
-           st.executeUpdate("delete  from katılımcı_bilgisi where etkinlik_id= "+c.getId());
-           String query="delete from etkinlik where etkinlik_id="+c.getId();
-           
-           st.executeUpdate(query);
-            
-           
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
+
+    public void adminupdate(Etkinlik c) {
+        String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
+        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+
+        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
+
+            preparedStatement.setString(1, c.getAdı());
+            preparedStatement.setString(2, c.getAçıklama());
+            preparedStatement.setInt(3, c.getMekan().getMekan_id());
+            preparedStatement.setString(4, c.getTarih_saat());
+            preparedStatement.setInt(5, c.getId());
+            preparedStatement.executeUpdate();
+
+            deleteStatement.setInt(1, c.getId());
+            deleteStatement.executeUpdate();
+
+            for (Kullanıcı k : c.getKlist()) {
+                insertStatement.setInt(1, c.getId());
+                insertStatement.setInt(2, k.getKullanıcı_id());
+                insertStatement.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-     
-     
-     
-    public void delete(Etkinlik c){
-         try{
-           Statement st=this.connect().createStatement();
-           String query="delete from etkinlik where etkinlik_id="+c.getId();
-           
-           st.executeUpdate(query);
-           
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
+
+    public void admindelete(Etkinlik c) {
+        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+        String deleteEventQuery = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
+
+        try (Connection conn = this.getDb(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
+
+            deleteParticipantsStatement.setInt(1, c.getId());
+            deleteParticipantsStatement.executeUpdate();
+
+            deleteEventStatement.setInt(1, c.getId());
+            deleteEventStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-    
-    
-    public void update(Etkinlik c){
-         try{
-           Statement st=this.connect().createStatement();
-           String query="update etkinlik set etkinlik_adı='"+c.getAdı()+"',açıklama='"+c.getAçıklama()+"',mekan_id='"+c.getMekan().getMekan_id()+"',tarih_saat='"+c.getTarih_saat()+"' where etkinlik_id="+c.getId();
-           
-           st.executeUpdate(query);
-           
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
+
+    public void delete(Etkinlik c) {
+        String query = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, c.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-   
-    
+
+    public void update(Etkinlik c) {
+        String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setString(1, c.getAdı());
+            preparedStatement.setString(2, c.getAçıklama());
+            preparedStatement.setInt(3, c.getMekan().getMekan_id());
+            preparedStatement.setString(4, c.getTarih_saat());
+            preparedStatement.setInt(5, c.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public Etkinlik findByID(int id) {
         Etkinlik c = null;
-        try {
-            String query = "SELECT * FROM etkinlik WHERE etkinlik_id=?";
-            PreparedStatement preparedStatement = this.connect().prepareStatement(query);
+        String query = "SELECT * FROM etkinlik WHERE etkinlik_id = ?";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                Mekan y=this.getMekandao().findByID(rs.getInt("mekan_id"));
-                c = new Etkinlik(rs.getInt("etkinlik_id"), rs.getString("etkinlik_adı"), rs.getString("açıklama"),y , rs.getString("tarih_saat"));
+                Mekan y = this.getMekandao().findByID(rs.getInt("mekan_id"));
+                c = new Etkinlik(rs.getInt("etkinlik_id"), rs.getString("etkinlik_adı"), rs.getString("açıklama"), y, rs.getString("tarih_saat"));
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return c;
     }
-    
 
 }

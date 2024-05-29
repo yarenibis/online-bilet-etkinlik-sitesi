@@ -15,7 +15,7 @@
     
      <ui:define name='content1'>
         <h:form>
-            <h:inputText value="#{tiyatroBean.searchKeyword}" />
+            <h:inputText value="#{tiyatroBean.searchKeyword}" styleClass="table table-striped table-hover"/>
             <h:commandButton value="Ara" action="#{tiyatroBean.searchTiyatro}" />
 
             <h:dataTable value="#{tiyatroBean.list}" var="tiyatro">
@@ -41,7 +41,7 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Seç</f:facet>
-                    <h:commandLink value="Seç" action="#{tiyatroBean.selectTiyatro(tiyatro)}"  />
+                    <h:commandLink value="Seç" action="#{tiyatroBean.selectTiyatro(tiyatro,kullanıcıBean.entity)}"  />
                 </h:column>
             </h:dataTable>
         </h:form>
@@ -70,7 +70,7 @@
             </h:column>
             <h:column>
                 <f:facet name="header">Seç</f:facet>
-                <h:commandLink value="Seç" action="#{tiyatroBean.selectTiyatro(tiyatro)}"  />
+                <h:commandLink value="Seç" action="#{tiyatroBean.selectTiyatro(tiyatro,kullanıcıBean.entity)}"  />
             </h:column>
         </h:dataTable>
         </h:form>

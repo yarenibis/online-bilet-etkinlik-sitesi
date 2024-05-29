@@ -9,7 +9,10 @@ import dao.EtkinlikDAO;
 import dao.KullanıcıDAO;
 import entity.Bilet;
 import entity.Etkinlik;
+import entity.Konser;
 import entity.Kullanıcı;
+import entity.Sinema;
+
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -159,21 +162,18 @@ public class EtkinlikBean implements Serializable {
 
     public String selectEtkinlik(Etkinlik etkinlik,Kullanıcı kullanıcı) {
         this.entity = etkinlik;  
-        int etkinlik_id = this.getEdao().findByID(this.entity.getId()).getId();
+         this.entity = this.getDao().findByID(entity.getId());
         int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
         
         Bilet bilet = new Bilet();
-        bilet.setEtkinlik_id(etkinlik_id); 
+        bilet.setEtkinlik_id(this.entity.getId()); 
         bilet.setKullanıcı_id(kullanıcı_id); 
        
         this.getBdao().createBilet(bilet);
 
-        return "/panel/bilet";
+        return "/kullanıcı/bilet";
     }
 
-    
-     
-    
     
     public void searchEtkinlik() {
         filteredEtkinlikList = new ArrayList<>(); 

@@ -19,11 +19,9 @@ public class BiletDAO extends DBConnection {
     private Connection db;
 
     public List<Bilet> getBiletList() {
-        List<Bilet> biletlist = new ArrayList();
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "select * from bilet";
-            ResultSet rs = st.executeQuery(query);
+        List<Bilet> biletlist = new ArrayList<>();
+        String query = "SELECT * FROM bilet";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {
                 biletlist.add(new Bilet(
@@ -31,55 +29,70 @@ public class BiletDAO extends DBConnection {
                         rs.getInt("etkinlik_id"),
                         rs.getInt("kullanıcı_id")
                 ));
-
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return biletlist;
     }
 
     public void createBilet(Bilet bilet) {
-        try {
-            String query = "INSERT INTO bilet (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-            PreparedStatement preparedStatement = this.connect().prepareStatement(query);
+        String query = "INSERT INTO bilet (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
             preparedStatement.setInt(1, bilet.getEtkinlik_id());
             preparedStatement.setInt(2, bilet.getKullanıcı_id());
-            
-             preparedStatement.executeUpdate();
-
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            // Hata durumunda işlemleri geri al
             e.printStackTrace();
         }
     }
 
     public void deleteBilet(int id) {
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "delete from bilet where bilet_id=" + id;
-            st.executeUpdate(query);
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        String query = "DELETE FROM bilet WHERE bilet_id = ?";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
     public void updateBilet(Bilet b) {
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "update bilet set kullanıcı_id='" + b.getKullanıcı_id() + "', kullanıcı_id='" + b.getKullanıcı_id() + "' where bilet_id=" + b.getBilet_id();
-            int r = st.executeUpdate(query);
+        String query = "UPDATE bilet SET etkinlik_id = ?, kullanıcı_id = ? WHERE bilet_id = ?";
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, b.getEtkinlik_id());
+            preparedStatement.setInt(2, b.getKullanıcı_id());
+            preparedStatement.setInt(3, b.getBilet_id());
+            int r = preparedStatement.executeUpdate();
             if (r > 0) {
                 System.out.println("Bilet güncellendi");
             } else {
                 System.out.println("Güncelleme başarısız");
             }
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
+    
+     public Bilet findByID(int id) {
+        Bilet c = null;
+        String query = "SELECT * FROM bilet WHERE kullanıcı_id = ?";
+
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+            
+                c = new Bilet(rs.getInt("bilet_id"), rs.getInt("etkinlik_id"), rs.getInt("kullanıcı_id"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return c;
+    }
+    
     private Connection getDb() {
         if (this.db == null) {
             this.db = this.connect();

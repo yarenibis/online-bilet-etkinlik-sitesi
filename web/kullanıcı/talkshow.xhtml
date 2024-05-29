@@ -15,8 +15,8 @@
     
      <ui:define name='content1'>
         <h:form>
-            <h:inputText value="#{talkShowBean.searchKeyword}" />
-            <h:commandButton value="Ara" action="#{talkShowBean.searchTalkshow()}" />
+            <h:inputText value="#{talkShowBean.searchKeyword}" styleClass="table table-striped table-hover" />
+            <h:commandButton value="Ara" action="#{talkShowBean.searchTalkShow()}" />
 
             <h:dataTable value="#{talkShowBean.list}" var="talkshow">
                 <h:column>
@@ -38,13 +38,13 @@
 
                 <h:column>
                     <f:facet name="header">Seç</f:facet>
-                    <h:commandLink value="Seç" action="#{talkShowBean.selectTalkshow(talkshow)}"  />
+                    <h:commandLink value="Seç" action="#{talkShowBean.selectTalkShow(talkshow, kullanıcıBean.entity)}"  />
                 </h:column>
             </h:dataTable>
         </h:form>
         ARAMA SONUCU:
         <h:form>
-            <h:dataTable value="#{talkShowBean.filteredTalkshowList}" var="talkshow">
+            <h:dataTable value="#{talkShowBean.filteredTalkShowList}" var="talkshow">
             <h:column>
                 <f:facet name="header">ID</f:facet>
                     #{talkshow.show_id}
@@ -64,7 +64,7 @@
 
             <h:column>
                 <f:facet name="header">Seç</f:facet>
-                <h:commandLink value="Seç" action="#{talkShowBean.selectTalkshow(talkshow)}"  />
+                <h:commandLink value="Seç" action="#{talkShowBean.selectTalkshow(talkshow, kullanıcıBean.entity)}"  />
             </h:column>
         </h:dataTable>
         </h:form>

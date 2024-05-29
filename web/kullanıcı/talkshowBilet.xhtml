@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template='/template.xhtml'>
+
+    <ui:define name='menu2'></ui:define>
+    <ui:define name='menu3'></ui:define>
+
+    <ui:define name='content1'>
+
+
+        <h:form>
+            <h:messages id="messages" globalOnly="true" layout="list" showDetail="true" showSummary="true" />
+
+            <h2>Kullanıcı Bilgileri</h2> <br/>
+            <h:outputText value="ADI:    "/>
+            <h:inputText  value="#{kullanıcıBean.entity.adı}"/><br/>
+
+            <h:outputText value="SOYADI: "/>
+            <h:inputText  value="#{kullanıcıBean.entity.soyadı}"/><br/>
+
+            <h:outputText value="EMAİL:  "/>
+            <h:inputText  value="#{kullanıcıBean.entity.email}"/><br/><br/>
+
+            <h2>Etkinlik Bilgileri</h2> <br/>
+            <h:outputText value="ETKİNLİK ADI:       "/>
+            <h:inputText  value="#{talkShowBean.entity.show_adi}"/><br/>
+
+            <h:outputText value="ETKİNLİK AÇIKLAMASI:"/>
+            <h:inputText  value="#{talkShowBean.entity.showman_adi}"/><br/>
+
+            <h:outputText value="ETKİNLİK TARİH:     "/>
+            <h:inputText  value="#{talkShowBean.entity.mekan}"/><br/><br/>
+            
+            <h:outputText value="ETKİNLİK TARİH:     "/>
+            <h:inputText  value="#{talkShowBean.entity.tarih}"/><br/><br/>
+
+            <h:commandButton styleClass="btn btn-primary" value="Bileti Oluştur" action="#{biletBean.biletoluştur()}"></h:commandButton>
+
+
+
+        </h:form>
+    </ui:define>
+
+
+
+
+</ui:composition>

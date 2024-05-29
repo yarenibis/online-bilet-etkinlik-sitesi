@@ -16,9 +16,9 @@
      <ui:define name='content1'>
         <h:form>
             <h:inputText value="#{konserBean.searchKeyword}" />
-            <h:commandButton value="Ara" action="#{konserBean.searchKonser}" />
+            <h:commandButton value="Ara" action="#{konserBean.searchKonser()}" />
 
-            <h:dataTable value="#{konserBean.list}" var="konser">
+            <h:dataTable value="#{konserBean.list}" styleClass="table table-striped table-hover" var="konser">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
                     #{konser.id}
@@ -41,7 +41,7 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Seç</f:facet>
-                    <h:commandLink value="Seç" action="#{konserBean.selectKonser(konser)}"  />
+                    <h:commandLink value="Seç" action="#{konserBean.selectKonser(konser, kullanıcıBean.entity)}"  />
                 </h:column>
             </h:dataTable>
         </h:form>
@@ -70,7 +70,7 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">Seç</f:facet>
-                    <h:commandLink value="Seç" action="#{konserBean.selectKonser(konser)}"  />
+                    <h:commandLink value="Seç" action="#{konserBean.selectKonser(konser, kullanıcıBean.entity)}"  />
                 </h:column>
             </h:dataTable>
         </h:form>

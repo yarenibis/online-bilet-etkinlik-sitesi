@@ -23,23 +23,22 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
 
     @Override
     public void create(Sinema sinema) {
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "INSERT INTO sinema(film_adı, salon_no) VALUES('"
-                    + sinema.getFilm_adi() + "',"
-                    + sinema.getSalon_no() + ")";
-            st.executeUpdate(query);
+        String query = "INSERT INTO sinema (film_adı, salon_no) VALUES (?, ?)";
+        try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+            st.setString(1, sinema.getFilm_adi());
+            st.setInt(2, sinema.getSalon_no());
+            st.executeUpdate();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
     @Override
-    public void delete(Sinema id) {
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "DELETE FROM sinema WHERE sinema_id=" + id;
-            int r = st.executeUpdate(query);
+    public void delete(Sinema sinema) {
+        String query = "DELETE FROM sinema WHERE sinema_id = ?";
+        try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+            st.setInt(1, sinema.getSinema_id());
+            int r = st.executeUpdate();
             if (r > 0) {
                 System.out.println("Sinema silindi");
             } else {
@@ -52,12 +51,12 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
 
     @Override
     public void update(Sinema sinema) {
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "UPDATE sinema SET film_adı='" + sinema.getFilm_adi()
-                    + "', salon_no=" + sinema.getSalon_no()
-                    + " WHERE sinema_id=" + sinema.getSinema_id();
-            int r = st.executeUpdate(query);
+        String query = "UPDATE sinema SET film_adı = ?, salon_no = ? WHERE sinema_id = ?";
+        try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+            st.setString(1, sinema.getFilm_adi());
+            st.setInt(2, sinema.getSalon_no());
+            st.setInt(3, sinema.getSinema_id());
+            int r = st.executeUpdate();
             if (r > 0) {
                 System.out.println("Sinema güncellendi");
             } else {
@@ -71,10 +70,8 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
     @Override
     public List<Sinema> list() {
         List<Sinema> sinemaList = new ArrayList<>();
-        try {
-            Statement st = this.getDb().createStatement();
-            String query = "SELECT * FROM sinema";
-            ResultSet rs = st.executeQuery(query);
+        String query = "SELECT * FROM sinema";
+        try (PreparedStatement st = this.getDb().prepareStatement(query); ResultSet rs = st.executeQuery()) {
 
             while (rs.next()) {
                 sinemaList.add(new Sinema(
@@ -88,23 +85,53 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         }
         return sinemaList;
     }
-    
-     public Sinema findByName(String film_adi){
-       Sinema c=null;
-         try{
-           Statement st=this.connect().createStatement();
-           String query="select * from sinema where film_adı="+film_adi;
-           
-           ResultSet rs=st.executeQuery(query);
-           while(rs.next()){
-               c=new Sinema(rs.getInt("sinema_id"),rs.getString("film_adı"),rs.getInt("salon_no"));
-           }
-           
-        }catch(Exception ex){
+
+    public Sinema findByName(String film_adi) {
+        Sinema c = null;
+        String query = "SELECT * FROM sinema WHERE film_adı = ?";
+        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+            st.setString(1, film_adi);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    c = new Sinema(rs.getInt("sinema_id"), rs.getString("film_adı"), rs.getInt("salon_no"));
+                }
+            }
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return c;
     }
 
-}
+    public Sinema findByID(int id) {
+        Sinema c = null;
+        String query = "SELECT * FROM sinema WHERE sinema_id = ?";
+        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    c = new Sinema(rs.getInt("sinema_id"), rs.getString("film_adı"), rs.getInt("salon_no"));
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return c;
+    }
+    
+    
+     public int count() {
+        int count = 0;
+        String query = "SELECT COUNT(etkinlik_id) AS total FROM etkinlik";
 
+        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+
+}
