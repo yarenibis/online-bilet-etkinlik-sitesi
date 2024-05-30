@@ -4,27 +4,39 @@
  */
 package entity;
 
+import java.util.List;
+
 
 
 public class Konser {
     private int id;
     private String adı;
     private String tarih;
-    private String mekan;
+    private Mekan mekan;
     private String sanatçı;
 
+    List<Kullanıcı> klist;
     
     
     public Konser() {
     }
     
    
-    public Konser(int id ,String adı,String mekan,String tarih, String sanatçı ) {
+    public Konser(int id ,String adı,Mekan mekan,String tarih, String sanatçı ) {
         this.id = id;
         this.adı = adı;
         this.tarih = tarih;
         this.mekan = mekan;
         this.sanatçı = sanatçı;
+    }
+    
+     public Konser(int id ,String adı,Mekan mekan,String tarih, String sanatçı,List<Kullanıcı> klist ) {
+        this.id = id;
+        this.adı = adı;
+        this.tarih = tarih;
+        this.mekan = mekan;
+        this.sanatçı = sanatçı;
+        this.klist=klist;
     }
 
     public int getId() {
@@ -51,11 +63,11 @@ public class Konser {
         this.tarih = tarih;
     }
 
-    public String getMekan() {
+    public Mekan getMekan() {
         return mekan;
     }
 
-    public void setMekan(String mekan) {
+    public void setMekan(Mekan mekan) {
         this.mekan = mekan;
     }
 
@@ -65,6 +77,14 @@ public class Konser {
 
     public void setSanatçı(String sanatçı) {
         this.sanatçı = sanatçı;
+    }
+
+    public List<Kullanıcı> getKlist() {
+        return klist;
+    }
+
+    public void setKlist(List<Kullanıcı> klist) {
+        this.klist = klist;
     }
 
 

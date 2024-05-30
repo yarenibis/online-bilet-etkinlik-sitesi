@@ -14,5 +14,5 @@ public interface Etkinlik_islem<T> {
     void create(T etkinlik);
     void delete(T etkinlik);
     void update(T etkinlik);
-    List<T> list();
+    List<T> list(int page, int pageSize);
 }

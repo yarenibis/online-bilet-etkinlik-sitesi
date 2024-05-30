@@ -21,7 +21,7 @@ import java.util.List;
 public class FestivalBean extends BaseController<Festival, FestivalDAO> implements Serializable {
 
 
-    private Festival entity;
+   private Festival entity;
     private FestivalDAO dao;
     private List<Festival> list;
     
@@ -95,7 +95,15 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
     
 
-  
+    public void adminupdate() {
+        this.getDao().adminupdate(entity);
+        entity = new Festival();
+    }
+
+    public void admindelete(Festival c) {
+        this.getDao().admindelete(c);
+        entity = new Festival();
+    }
     
 
     public BiletDAO getBdao() {
@@ -151,8 +159,8 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
 
    
 
-    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
-        this.entity = festival;  
+    public String selectFestival(Festival etkinlik,Kullanıcı kullanıcı) {
+        this.entity = etkinlik;  
          this.entity = this.getDao().findByID(entity.getFestival_id());
         int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
         
@@ -168,9 +176,9 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     
     public void searchFestival() {
         filteredFestivalList = new ArrayList<>(); 
-        for (Festival festival : list) {
-            if (festival.getFestival_adi().contains(searchKeyword)) {
-                filteredFestivalList.add(festival); // Arama kriterlerine uyanları yeni listeye ekle
+        for (Festival etkinlik : list) {
+            if (etkinlik.getFestival_adi().contains(searchKeyword)) {
+                filteredFestivalList.add(etkinlik); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }
     }
@@ -198,7 +206,7 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
 
     public List<Festival> getList() {
-        this.list = this.getDao().list();
+        this.list = this.getDao().list(page,pageSize);
         return list;
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 @SessionScoped
 public class KonserBean extends BaseController<Konser, KonserDAO> implements Serializable {
 
-   private Konser entity;
+    private Konser entity;
     private KonserDAO dao;
     private List<Konser> list;
     
@@ -198,7 +198,7 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
     }
 
     public List<Konser> getList() {
-        this.list = this.getDao().list();
+        this.list = this.getDao().list(page, pageSize);
         return list;
     }
 

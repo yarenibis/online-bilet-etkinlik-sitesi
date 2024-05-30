@@ -197,7 +197,7 @@ public class SinemaBean extends BaseController<Sinema, SinemaDAO> implements Ser
     }
 
     public List<Sinema> getList() {
-        this.list = this.getDao().list();
+        this.list = this.getDao().list(page, pageSize);
         return list;
     }
 

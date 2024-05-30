@@ -5,6 +5,7 @@
 package entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -14,15 +15,27 @@ public class Talkshow {
     private int show_id;
     private String show_adi;
     private String showman_adi;
-    private String mekan;
+    private Mekan mekan;
     private String tarih;
+    
+    List<Kullanıcı> klist;
+    
 
-    public Talkshow(int show_id, String show_adi, String showman_adi,String mekan, String tarih) {
+    public Talkshow(int show_id, String show_adi, String showman_adi,Mekan mekan, String tarih) {
         this.show_id = show_id;
         this.show_adi = show_adi;
         this.showman_adi = showman_adi;
         this.mekan=mekan;
         this.tarih = tarih;
+    }
+    
+    public Talkshow(int show_id, String show_adi, String showman_adi,Mekan mekan, String tarih,List<Kullanıcı> klist) {
+        this.show_id = show_id;
+        this.show_adi = show_adi;
+        this.showman_adi = showman_adi;
+        this.mekan=mekan;
+        this.tarih = tarih;
+        this.klist=klist;
     }
 
     public Talkshow() {
@@ -60,12 +73,20 @@ public class Talkshow {
         this.tarih = tarih;
     }
 
-    public String getMekan() {
+    public Mekan getMekan() {
         return mekan;
     }
 
-    public void setMekan(String mekan) {
+    public void setMekan(Mekan mekan) {
         this.mekan = mekan;
+    }
+
+    public List<Kullanıcı> getKlist() {
+        return klist;
+    }
+
+    public void setKlist(List<Kullanıcı> klist) {
+        this.klist = klist;
     }
     
     

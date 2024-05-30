@@ -20,7 +20,7 @@ import java.util.List;
 @SessionScoped
 public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements Serializable {
 
-    private Tiyatro entity;
+     private Tiyatro entity;
     private TiyatroDAO dao;
     private List<Tiyatro> list;
     
@@ -197,7 +197,7 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
     }
 
     public List<Tiyatro> getList() {
-        this.list = this.getDao().list();
+        this.list = this.getDao().list(page, pageSize);
         return list;
     }
 

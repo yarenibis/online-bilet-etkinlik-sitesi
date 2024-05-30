@@ -5,29 +5,38 @@
 package entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author yaren
  */
 public class Festival {
-    private int festival_id;
+     private int festival_id;
     private String festival_adi;
-    private String mekan;
+    private Mekan mekan;
     private String tarih;
+    
+    private List<Kullanıcı> klist;
     
     public Festival(){
         
     }
 
-    public Festival(int festival_id, String festival_adi,String mekan, String tarih) {
+    public Festival(int festival_id, String festival_adi,Mekan mekan, String tarih) {
         this.festival_id = festival_id;
         this.festival_adi = festival_adi;
         this.mekan=mekan;
         this.tarih = tarih;
     }
 
-
+public Festival(int festival_id, String festival_adi,Mekan mekan, String tarih,List<Kullanıcı> klist) {
+        this.festival_id = festival_id;
+        this.festival_adi = festival_adi;
+        this.mekan=mekan;
+        this.tarih = tarih;
+        this.klist=klist;
+    }
 
     public int getFestival_id() {
         return festival_id;
@@ -53,18 +62,22 @@ public class Festival {
         this.tarih = tarih;
     }
 
-    public String getMekan() {
+    public Mekan getMekan() {
         return mekan;
     }
 
-    public void setMekan(String mekan) {
+    public void setMekan(Mekan mekan) {
         this.mekan = mekan;
     }
 
-    
-    
-    
-    
+    public List<Kullanıcı> getKlist() {
+        return klist;
+    }
+
+    public void setKlist(List<Kullanıcı> klist) {
+        this.klist = klist;
+    }
+
     
 }
 
