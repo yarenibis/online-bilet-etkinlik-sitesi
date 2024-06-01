@@ -19,6 +19,9 @@
                                 <h:commandButton value="Ara" styleClass="btn btn-primary" action="#{etkinlikBean.searchEtkinlik}" />
                             </div>
                         </div>
+                        
+                        <h:commandButton action="#{etkinlikBean.previous()}" value="Previous"/>
+                        <h:commandButton action="#{etkinlikBean.next()}" value="Next"/><br/><br/>
                         <table class="table table-striped">
                             <thead>
                                 <tr>

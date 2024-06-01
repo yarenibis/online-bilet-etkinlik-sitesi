@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template='/template.xhtml'>
+
+    <ui:define name='menu2'></ui:define>
+    <ui:define name='menu'></ui:define>
+
+    <ui:define name='content1'>
+        <div class="container mt-3">
+            <h:form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group mb-3">
+                            <h:inputText value="#{konserBean.searchKeyword}" styleClass="form-control" />
+                            <div class="input-group-append">
+                                <h:commandButton value="Ara" styleClass="btn btn-primary" action="#{konserBean.searchKonser()}" />
+                            </div>
+                        </div>
+                        
+                        <h:commandButton action="#{konserBean.previous()}" value="Previous"/>
+                        <h:commandButton action="#{konserBean.next()}" value="Next"/><br/><br/>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th> Adı</th>
+                                    <th>Sanatçı</th>
+                                    <th>Mekan</th>
+                                    <th>Tarih</th>
+                                    <th>Seç</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ui:repeat value="#{konserBean.list}" var="etkinlik">
+                                    <tr>
+                                        <td>#{etkinlik.id}</td>
+                                        <td>#{etkinlik.adı}</td>
+                                        <td>#{etkinlik.sanatçı}</td>
+                                        <td>#{etkinlik.mekan.mekan_adi}</td>
+                                        <td>#{etkinlik.tarih}</td>
+                                        <td><h:commandButton value="Seç" styleClass="btn btn-success" action="#{konserBean.selectKonser(etkinlik, kullanıcıBean.entity)}" /></td>
+                                    </tr>
+                                </ui:repeat>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h:dataTable styleClass="table table-striped" value="#{konserBean.filteredKonserList}" var="etkinlik">
+                            <h:column>
+                                <f:facet name="header">ID</f:facet>
+                                    #{etkinlik.id}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"> Adı</f:facet>
+                                    #{etkinlik.adı}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Sanatçı </f:facet>
+                                    #{etkinlik.sanatçı}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Mekan </f:facet>
+                                    #{etkinlik.mekan.mekan_adi}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Tarih</f:facet>
+                                    #{etkinlik.tarih}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Seç</f:facet>
+                                <h:commandLink value="Seç" action="#{konserBean.selectKonser(etkinlik,kullanıcıBean.entity)}" styleClass="btn btn-info" />
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+        
+        
+        
+    </ui:define>
+
+</ui:composition>

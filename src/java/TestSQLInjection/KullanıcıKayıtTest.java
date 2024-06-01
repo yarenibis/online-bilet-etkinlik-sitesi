@@ -26,7 +26,7 @@ public class KullanıcıKayıtTest {
             kullanıcıDAO.kullanıcıkayıt(yeniKullanıcı);
 
             // Kullanıcının veritabanına eklendiğini doğrula
-            try (Statement st = kullanıcıDAO.connect().createStatement()) {
+            try (Statement st = kullanıcıDAO.getConnection().createStatement()) {
                 ResultSet rs = st.executeQuery("SELECT * FROM kullanıcı WHERE email = 'salii@gmail.com'");
                 if (rs.next()) {
                     System.out.println("Test durumu (kullanıcı kaydı): Basarili");

@@ -12,7 +12,7 @@ import java.util.List;
  * @author yaren
  */
 public class Festival {
-     private int festival_id;
+    private int festival_id;
     private String festival_adi;
     private Mekan mekan;
     private String tarih;
@@ -78,6 +78,32 @@ public Festival(int festival_id, String festival_adi,Mekan mekan, String tarih,L
         this.klist = klist;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + this.festival_id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Festival other = (Festival) obj;
+        return this.festival_id == other.festival_id;
+    }
+
+    
+    
+    
+    
     
 }
 

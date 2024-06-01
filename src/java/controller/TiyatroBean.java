@@ -20,7 +20,7 @@ import java.util.List;
 @SessionScoped
 public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements Serializable {
 
-     private Tiyatro entity;
+    private Tiyatro entity;
     private TiyatroDAO dao;
     private List<Tiyatro> list;
     
@@ -150,25 +150,32 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
 
    
 
-    public String selectTiyatro(Tiyatro tiyatro,Kullanıcı kullanıcı) {
+     public String selectTiyatro(Tiyatro tiyatro,Kullanıcı kullanıcı) {
         this.entity = tiyatro;  
-         this.entity = this.getDao().findByID(entity.getId());
+        this.entity = this.getDao().findByID(entity.getId());
+        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
         int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
         
+       
         Bilet bilet = new Bilet();
         bilet.setEtkinlik_id(this.entity.getId()); 
         bilet.setKullanıcı_id(kullanıcı_id); 
        
         this.getBdao().createBilet(bilet);
 
-        return "/kullanıcı/bilet";
+        return "/user/tiyatro-detay";
+        }
+       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris"; 
     }
 
     
     public void searchTiyatro() {
         filteredTiyatroList = new ArrayList<>(); 
         for (Tiyatro tiyatro : list) {
-            if (tiyatro.getAdı().contains(searchKeyword) ) {
+            if (tiyatro.getAdı().toLowerCase().contains(searchKeyword.toLowerCase())
+                    || tiyatro.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())
+                    || tiyatro.getOyuncu().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredTiyatroList.add(tiyatro); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }

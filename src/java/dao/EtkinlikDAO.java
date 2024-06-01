@@ -31,20 +31,14 @@ public class EtkinlikDAO extends DBConnection {
         return mekandao;
     }
 
-    public Connection getDb() {
-        if (this.db == null) {
-            db = this.connect();
 
-        }
-        return db;
-    }
 
     public List<Etkinlik> getEtkinlikList(int page, int pageSize) {
         List<Etkinlik> etkinlikList = new ArrayList<>();
         int start = (page - 1) * pageSize;
         String query = "SELECT * FROM etkinlik ORDER BY etkinlik_id ASC LIMIT ? OFFSET ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, pageSize);
             preparedStatement.setInt(2, start);
             ResultSet rs = preparedStatement.executeQuery();
@@ -68,7 +62,7 @@ public class EtkinlikDAO extends DBConnection {
         int count = 0;
         String query = "SELECT COUNT(etkinlik_id) AS total FROM etkinlik";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
             if (rs.next()) {
                 count = rs.getInt("total");
@@ -82,7 +76,7 @@ public class EtkinlikDAO extends DBConnection {
     public void EtkinlikOluştur(Etkinlik e) {
         String query = "INSERT INTO etkinlik (etkinlik_adı, açıklama, mekan_id, tarih_saat) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, e.getAdı());
             preparedStatement.setString(2, e.getAçıklama());
             preparedStatement.setInt(3, e.getMekan().getMekan_id());
@@ -93,41 +87,13 @@ public class EtkinlikDAO extends DBConnection {
         }
     }
 
-    public void admincreate(Etkinlik e) {
-        String query = "INSERT INTO etkinlik (etkinlik_adı, açıklama, mekan_id, tarih_saat) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, e.getAdı());
-            preparedStatement.setString(2, e.getAçıklama());
-            preparedStatement.setInt(3, e.getMekan().getMekan_id());
-            preparedStatement.setString(4, e.getTarih_saat());
-            preparedStatement.executeUpdate();
-
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                int et_id = rs.getInt(1);
-                String participantQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-
-                try (PreparedStatement participantStatement = conn.prepareStatement(participantQuery)) {
-                    for (Kullanıcı k : e.getKlist()) {
-                        participantStatement.setInt(1, et_id);
-                        participantStatement.setInt(2, k.getKullanıcı_id());
-                        participantStatement.executeUpdate();
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 
     public void adminupdate(Etkinlik c) {
         String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
         String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
         String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
 
-        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
+        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
 
             preparedStatement.setString(1, c.getAdı());
             preparedStatement.setString(2, c.getAçıklama());
@@ -153,7 +119,7 @@ public class EtkinlikDAO extends DBConnection {
         String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
         String deleteEventQuery = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
 
-        try (Connection conn = this.getDb(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
+        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
 
             deleteParticipantsStatement.setInt(1, c.getId());
             deleteParticipantsStatement.executeUpdate();
@@ -168,7 +134,7 @@ public class EtkinlikDAO extends DBConnection {
     public void delete(Etkinlik c) {
         String query = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, c.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -179,7 +145,7 @@ public class EtkinlikDAO extends DBConnection {
     public void update(Etkinlik c) {
         String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, c.getAdı());
             preparedStatement.setString(2, c.getAçıklama());
             preparedStatement.setInt(3, c.getMekan().getMekan_id());
@@ -195,7 +161,7 @@ public class EtkinlikDAO extends DBConnection {
         Etkinlik c = null;
         String query = "SELECT * FROM etkinlik WHERE etkinlik_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 

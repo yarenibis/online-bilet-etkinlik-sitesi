@@ -33,12 +33,13 @@ public class KullanıcıDAO extends DBConnection {
      public boolean kullanıcıGirişi(String mail, String şifre) {
         String query = "SELECT * FROM kullanıcı WHERE email = ? AND şifre = ?";
 
-        try (PreparedStatement pst = this.db.prepareStatement(query)) {
+        try (PreparedStatement pst = this.getConnection().prepareStatement(query)) {
             pst.setString(1, mail);
-            pst.setString(2, hashPassword(şifre)); // Hash the password before comparing
+            pst.setString(2, şifre); // Hash the password before comparing
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    System.out.println("**************************************bulundu");
                     return true; // Kullanıcı bulundu, giriş başarılı
                 }
             }
@@ -46,27 +47,28 @@ public class KullanıcıDAO extends DBConnection {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+         System.out.println("******************************bulunamadı");
         return false; // Kullanıcı bulunamadı veya şifre yanlış
     }
 
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder(2 * hash.length);
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
+//    private String hashPassword(String password) {
+//        try {
+//            MessageDigest md = MessageDigest.getInstance("SHA-256");
+//            byte[] hash = md.digest(password.getBytes());
+//            StringBuilder hexString = new StringBuilder(2 * hash.length);
+//            for (byte b : hash) {
+//                String hex = Integer.toHexString(0xff & b);
+//                if (hex.length() == 1) {
+//                    hexString.append('0');
+//                }
+//                hexString.append(hex);
+//            }
+//            return hexString.toString();
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//    
     
 
 //    public boolean kullanıcıGirişi(String mail, String şifre) {
@@ -114,7 +116,7 @@ public class KullanıcıDAO extends DBConnection {
     public void kullanıcıkayıt(Kullanıcı n) {
          String query = "INSERT INTO kullanıcı(adı, soyadı, email, şifre) VALUES (?, ?, ?, ?)";
 
-    try (PreparedStatement pst = this.getDb().prepareStatement(query)) {
+    try (PreparedStatement pst = this.getConnection().prepareStatement(query)) {
         pst.setString(1, n.getAdı());
         pst.setString(2, n.getSoyadı());
         pst.setString(3, n.getEmail());
@@ -128,7 +130,7 @@ public class KullanıcıDAO extends DBConnection {
     public Kullanıcı findByMail(String mail) {
         Kullanıcı c = null;
         try {
-            Connection conn = this.connect();
+            Connection conn = this.getConnection();
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM kullanıcı WHERE email=?");
             ps.setString(1, mail);
             ResultSet rs = ps.executeQuery();
@@ -137,9 +139,7 @@ public class KullanıcıDAO extends DBConnection {
                 c = new Kullanıcı(rs.getInt("kullanıcı_id"), rs.getString("adı"), rs.getString("soyadı"), rs.getString("email"), rs.getString("şifre"));
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
+         
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -151,7 +151,7 @@ public class KullanıcıDAO extends DBConnection {
         Kullanıcı c = null;
         try {
             String query = "SELECT * FROM kullanıcı WHERE kullanıcı_id=?";
-            PreparedStatement preparedStatement = this.connect().prepareStatement(query);
+            PreparedStatement preparedStatement = this.getConnection().prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -166,12 +166,7 @@ public class KullanıcıDAO extends DBConnection {
     }
     
     
-    public Connection getDb() {
-        if (this.db == null) {
-            this.db = this.connect();
-        }
-        return db;
-    }
+  
     
     
     
@@ -179,7 +174,7 @@ public class KullanıcıDAO extends DBConnection {
     public List<Kullanıcı> getList() {
     List<Kullanıcı> list = new ArrayList<>();
     String query = "SELECT * FROM kullanıcı";
-    try (PreparedStatement st = this.connect().prepareStatement(query);
+    try (PreparedStatement st = this.getConnection().prepareStatement(query);
          ResultSet rs = st.executeQuery()) {
 
         while (rs.next()) {
@@ -207,7 +202,7 @@ public class KullanıcıDAO extends DBConnection {
     public List<Yetki> admingetyetkiler(int kullanıcı_id) {
     List<Yetki> yetkilist = new ArrayList<>();
     String query = "SELECT * FROM yetki WHERE yetki_id IN (SELECT yetki_id FROM kullanıcı_yetki WHERE kullanıcı_id = ?)";
-    try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+    try (PreparedStatement st = this.getConnection().prepareStatement(query)) {
         st.setInt(1, kullanıcı_id);
         try (ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
@@ -231,7 +226,7 @@ public class KullanıcıDAO extends DBConnection {
     
     public void create(Kullanıcı e){
         try{
-           Statement st=this.getDb().createStatement();
+           Statement st=this.getConnection().createStatement();
            String query="insert into kullanıcı(adı,soyadı,email,şifre) values('"+e.getAdı()+"','"+e.getSoyadı()+"','"+e.getEmail()+"','"+e.getŞifre()+"')";
            st.executeUpdate(query);
            ResultSet rs=st.executeQuery("select max(kullanıcı_id) as mid from kullanıcı");
@@ -251,18 +246,18 @@ public class KullanıcıDAO extends DBConnection {
     
     
  
-     public void adminupdate(Kullanıcı c){
+     public void adminupdate(Kullanıcı n){
          try{
-           Statement st=this.connect().createStatement();
-           String query="update kullanıcı set adı='"+c.getAdı()+"',soyadı='"+c.getSoyadı()+"',email='"+c.getEmail()+"',şifre='"+c.getŞifre()+"' where kullanıcı_id="+c.getKullanıcı_id();
+           Statement st=this.getConnection().createStatement();
+           String query="update kullanıcı set adı='"+n.getAdı()+"',soyadı='"+n.getSoyadı()+"',email='"+n.getEmail()+"',şifre='"+n.getŞifre()+"' where kullanıcı_id="+n.getKullanıcı_id();
            
            st.executeUpdate(query);
-           st.executeUpdate("delete from kullanıcı_yetki where kullanıcı_id= "+c.getKullanıcı_id());
+           st.executeUpdate("delete from kullanıcı_yetki where kullanıcı_id= "+n.getKullanıcı_id());
            
          
            
-           for(Yetki k:c.getYetkiler()){
-               query="insert into kullanıcı_yetki(kullanıcı_id,yetki_id) values("+c.getKullanıcı_id()+","+k.getYetki_id()+")";
+           for(Yetki k:n.getYetkiler()){
+               query="insert into kullanıcı_yetki(kullanıcı_id,yetki_id) values("+n.getKullanıcı_id()+","+k.getYetki_id()+")";
                st.executeUpdate(query);
            }
         }catch(Exception ex){
@@ -274,7 +269,7 @@ public class KullanıcıDAO extends DBConnection {
      
      public void admindelete(Kullanıcı c){
          try{
-           Statement st=this.connect().createStatement();
+           Statement st=this.getConnection().createStatement();
            String query="delete from kullanıcı where kullanıcı_id="+c.getKullanıcı_id();
             st.executeUpdate(query);
            st.executeUpdate("delete from kullanıcı_yetki where kullanıcı_id= "+c.getKullanıcı_id());

@@ -125,7 +125,7 @@ public class Etkinlik {
         return this.id == other.id;
     }
 
-    
+   
     
  
 }

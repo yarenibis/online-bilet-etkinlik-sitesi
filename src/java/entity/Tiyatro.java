@@ -12,8 +12,7 @@ import java.util.List;
  * @author yaren
  */
 public class Tiyatro {
-
-   private int id;
+    private int id;
     private String adı;
     private Mekan mekan;
     private String oyuncu;
@@ -98,9 +97,4 @@ public class Tiyatro {
     
     
 }
-
-    
-    
-    
-
 

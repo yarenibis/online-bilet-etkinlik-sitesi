@@ -30,6 +30,13 @@ public class Konser {
         this.sanatçı = sanatçı;
     }
     
+    public Konser(String adı,Mekan mekan,String tarih, String sanatçı ) {
+        this.adı = adı;
+        this.tarih = tarih;
+        this.mekan = mekan;
+        this.sanatçı = sanatçı;
+    }
+    
      public Konser(int id ,String adı,Mekan mekan,String tarih, String sanatçı,List<Kullanıcı> klist ) {
         this.id = id;
         this.adı = adı;
@@ -85,6 +92,28 @@ public class Konser {
 
     public void setKlist(List<Kullanıcı> klist) {
         this.klist = klist;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Konser other = (Konser) obj;
+        return this.id == other.id;
     }
 
 

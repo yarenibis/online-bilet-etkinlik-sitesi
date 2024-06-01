@@ -21,7 +21,7 @@ import java.util.List;
 public class FestivalBean extends BaseController<Festival, FestivalDAO> implements Serializable {
 
 
-   private Festival entity;
+    private Festival entity;
     private FestivalDAO dao;
     private List<Festival> list;
     
@@ -159,25 +159,31 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
 
    
 
-    public String selectFestival(Festival etkinlik,Kullanıcı kullanıcı) {
-        this.entity = etkinlik;  
-         this.entity = this.getDao().findByID(entity.getFestival_id());
+    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
+        this.entity = festival;  
+        this.entity = this.getDao().findByID(entity.getFestival_id());
+        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
         int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
         
+       
         Bilet bilet = new Bilet();
         bilet.setEtkinlik_id(this.entity.getFestival_id()); 
         bilet.setKullanıcı_id(kullanıcı_id); 
        
         this.getBdao().createBilet(bilet);
 
-        return "/kullanıcı/bilet";
+        return "/user/festival-detay";
+        }
+       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris"; 
     }
 
     
     public void searchFestival() {
         filteredFestivalList = new ArrayList<>(); 
         for (Festival etkinlik : list) {
-            if (etkinlik.getFestival_adi().contains(searchKeyword)) {
+            if (etkinlik.getFestival_adi().toLowerCase().contains(searchKeyword.toLowerCase()) 
+                    || etkinlik.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredFestivalList.add(etkinlik); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }

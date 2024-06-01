@@ -1,52 +1,65 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      template='/template.xhtml'>
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template='/template.xhtml'>
 
-    
-    
-    
-     <ui:define name='menu'></ui:define>
+    <ui:define name='menu'></ui:define>
     <ui:define name='menu3'></ui:define>
-       
-     <ui:define name='content1'>
-       
-        <h:form>
-           
-            Film adı <h:inputText value="#{sinemaBean.entity.film_adi}" /> <br/>
-            salon no <h:inputText value="#{sinemaBean.entity.salon_no}" />
-            
-            <h:commandButton rendered="#{sinemaBean.entity.sinema_id==0}" action="#{sinemaBean.create()}" value="Create"/>
-            <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.update()}" value="Update"/>
-            <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.clear()}" value="Clear Form"/>
 
+    <ui:define name='content1'>
+
+        <h:form>
+            <h:commandButton action="#{sinemaBean.previous()}" value="Previous"/>
+            <h:commandButton action="#{sinemaBean.next()}" value="Next"/><br/><br/>
+
+            <h:panelGrid columns="2">
+                <h:outputLabel for="sinemaAdi" value="sinema Adı:"/>
+                <h:inputText id="sinemakAdi" value="#{sinemaBean.entity.film_adi}"/>
+
+                
+
+                <h:outputLabel for="mekan" value="Mekan:"/>
+                <h:selectOneMenu id="mekan" value="#{sinemaBean.entity.mekan}" converter="mekanconverter">
+                    <f:selectItems value="#{mekanBean.list}" var="m" itemValue="#{m}" itemLabel="#{m.mekan_adi}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel for="salon" value="Salon"/>
+                <h:inputText id="salon" value="#{sinemaBean.entity.salon_no}"/><br/>
+
+                <h:commandButton rendered="#{sinemaBean.entity.sinema_id==0}" action="#{sinemaBean.create()}" value="Create"/>
+                <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.update()}" value="Update"/>
+                <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.clear()}" value="Clear Form"/>
+            </h:panelGrid>
         </h:form>
         <hr/>
         <h:form>
             <h:dataTable value="#{sinemaBean.list}" var="entity">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
-                        #{entity.sinema_id}
+                    #{entity.sinema_id}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">FİLM ADI</f:facet>
-                        #{entity.film_adi}
+                    <f:facet name="header">ETKİNLİK ADI</f:facet>
+                    #{entity.film_adi}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">SALON NO</f:facet>
-                        #{entity.salon_no}
+                    <f:facet name="header">MEKAN</f:facet>
+                    #{entity.mekan.mekan_adi}
                 </h:column>
-
+                <h:column>
+                    <f:facet name="header">TARİH-SAAT</f:facet>
+                    #{entity.salon_no}
+                </h:column>
                 <h:column>
                     <f:facet name="header">ADMİNİSTRATOR</f:facet>
-                    <h:commandButton  action="#{sinemaBean.delete(entity)}" value="DELETE"/>
-                    <h:commandButton  action="#{sinemaBean.setEntity(entity)}" value="UPDATE"/>
+                    <h:commandButton action="#{sinemaBean.delete(entity)}" value="DELETE"/>
+                    <h:commandButton action="#{sinemaBean.setEntity(entity)}" value="UPDATE"/>
                 </h:column>
             </h:dataTable>
         </h:form>
-        </ui:define>
-  
+    </ui:define>
+
 </ui:composition>

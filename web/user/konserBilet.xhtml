@@ -14,7 +14,7 @@
 
         <h:form>
             <h:messages id="messages" globalOnly="true" layout="list" showDetail="true" showSummary="true" />
-
+            <h3>Bilet bilgileri</h3>
             <h2>Kullanıcı Bilgileri</h2> <br/>
             <h:outputText value="ADI:    "/>
             <h:inputText  value="#{kullanıcıBean.entity.adı}"/><br/>
@@ -27,15 +27,18 @@
 
             <h2>Etkinlik Bilgileri</h2> <br/>
             <h:outputText value="ETKİNLİK ADI:       "/>
-            <h:inputText  value="#{sinemaBean.entity.film_adi}"/><br/>
+            <h:inputText  value="#{konserBean.entity.adı}"/><br/>
 
             <h:outputText value="ETKİNLİK AÇIKLAMASI:"/>
-            <h:inputText  value="#{sinemaBean.entity.salon_no}"/><br/>
+            <h:inputText  value="#{konserBean.entity.mekan}"/><br/>
 
+            <h:outputText value="ETKİNLİK TARİH:     "/>
+            <h:inputText  value="#{konserBean.entity.sanatçı}"/><br/><br/>
             
+            <h:outputText value="ETKİNLİK TARİH:     "/>
+            <h:inputText  value="#{konserBean.entity.tarih}"/><br/><br/>
 
-            <h:commandButton styleClass="btn btn-primary" value="Bileti Oluştur" action="#{biletBean.biletoluştur()}"></h:commandButton>
-
+            <h3>Biletiniz rezerve edilmiştir. Ödeme elden yapılacaktır.</h3>
 
 
         </h:form>

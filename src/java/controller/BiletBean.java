@@ -64,7 +64,7 @@ public class BiletBean implements Serializable {
     }
     
     public String biletoluştur(){
-        return "/kullanıcı/bilet-succeed";
+        return "/user/bilet";
     }
 
 

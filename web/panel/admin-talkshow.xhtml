@@ -1,63 +1,70 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      template='/template.xhtml'>
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template='/template.xhtml'>
 
-    
-    
-    
-     <ui:define name='menu'></ui:define>
+    <ui:define name='menu'></ui:define>
     <ui:define name='menu3'></ui:define>
-       
-     <ui:define name='content1'>
-       
+
+    <ui:define name='content1'>
+
         <h:form>
-           
-    
-            Talkshow adı <h:inputText value="#{talkShowBean.entity.show_adi}" /> <br/>
-            Showman adı <h:inputText value="#{talkShowBean.entity.showman_adi}" />
-            Mekan  <h:inputText value="#{talkShowBean.entity.mekan}" />
+            <h:commandButton action="#{talkshowBean.previous()}" value="Previous"/>
+            <h:commandButton action="#{talkshowBean.next()}" value="Next"/><br/><br/>
 
-            Tarih <h:inputText value="#{talkShowBean.entity.tarih}" />
-            <h:commandButton rendered="#{talkShowBean.entity.show_id==0}" action="#{talkShowBean.create()}" value="Create"/>
-            <h:commandButton rendered="#{talkShowBean.entity.show_id!=0}" action="#{talkShowBean.update()}" value="Update"/>
-            <h:commandButton rendered="#{talkShowBean.entity.show_id!=0}" action="#{talkShowBean.clear()}" value="Clear Form"/>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="talkshowAdi" value="talkshow Adı:"/>
+                <h:inputText id="talkshowAdi" value="#{talkshowBean.entity.show_adi}"/>
 
+                <h:outputLabel for="showman" value="Showman Adı"/>
+                <h:inputText id="showman" value="#{talkshowBean.entity.showman_adi}"/><br/>
+
+                <h:outputLabel for="mekan" value="Mekan:"/>
+                <h:selectOneMenu id="mekan" value="#{talkshowBean.entity.mekan}" converter="mekanconverter">
+                    <f:selectItems value="#{mekanBean.list}" var="m" itemValue="#{m}" itemLabel="#{m.mekan_adi}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel for="tarihSaat" value="Showman Adı"/>
+                <h:inputText id="tarihSaat" value="#{talkshowBean.entity.tarih}"/><br/>
+
+                <h:commandButton rendered="#{talkshowBean.entity.show_id==0}" action="#{talkshowBean.create()}" value="Create"/>
+                <h:commandButton rendered="#{talkshowBean.entity.show_id!=0}" action="#{talkshowBean.update()}" value="Update"/>
+                <h:commandButton rendered="#{talkshowBean.entity.show_id!=0}" action="#{talkshowBean.clear()}" value="Clear Form"/>
+            </h:panelGrid>
         </h:form>
         <hr/>
         <h:form>
-            <h:dataTable value="#{talkShowBean.list}" var="entity">
+            <h:dataTable value="#{talkshowBean.list}" var="entity">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
-                        #{entity.show_id}
+                    #{entity.show_id}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">SHOW ADI</f:facet>
-                        #{entity.show_adi}
+                    <f:facet name="header">ETKİNLİK ADI</f:facet>
+                    #{entity.show_adi}
                 </h:column>
                 <h:column>
                     <f:facet name="header">SHOWMAN ADI</f:facet>
-                        #{entity.showman_adi}
+                    #{entity.showman_adi}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">MEKAN </f:facet>
-                        #{entity.mekan}
+                    <f:facet name="header">MEKAN</f:facet>
+                    #{entity.mekan.mekan_adi}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">TARİH</f:facet>
-                        #{entity.tarih}
+                    <f:facet name="header">TARİH-SAAT</f:facet>
+                    #{entity.tarih}
                 </h:column>
-
                 <h:column>
                     <f:facet name="header">ADMİNİSTRATOR</f:facet>
-                    <h:commandButton  action="#{talkShowBean.delete(entity)}" value="DELETE"/>
-                    <h:commandButton  action="#{talkShowBean.setEntity(entity)}" value="UPDATE"/>
+                    <h:commandButton action="#{talkshowBean.delete(entity)}" value="DELETE"/>
+                    <h:commandButton action="#{talkshowBean.setEntity(entity)}" value="UPDATE"/>
                 </h:column>
             </h:dataTable>
         </h:form>
-        </ui:define>
-  
+    </ui:define>
+
 </ui:composition>

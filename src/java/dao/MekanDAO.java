@@ -18,18 +18,11 @@ public class MekanDAO extends DBConnection {
 
     private Connection db;
 
-    public Connection getDb() {
-        if (this.db == null) {
-            db = this.connect();
-
-        }
-        return db;
-    }
-
+  
     public List<Mekan> getMekanList() {
         List<Mekan> etkinlikList = new ArrayList<>();
         String query = "SELECT * FROM mekan";
-        try (PreparedStatement st = this.getDb().prepareStatement(query); ResultSet rs = st.executeQuery()) {
+        try (PreparedStatement st = this.getConnection().prepareStatement(query); ResultSet rs = st.executeQuery()) {
 
             while (rs.next()) {
                 etkinlikList.add(new Mekan(
@@ -47,7 +40,7 @@ public class MekanDAO extends DBConnection {
 
     public void MekanOluştur(Mekan e) {
         String query = "INSERT INTO mekan (adı, adres, kapasite) VALUES (?, ?, ?)";
-        try (PreparedStatement st = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement st = this.getConnection().prepareStatement(query)) {
             st.setString(1, e.getMekan_adi());
             st.setString(2, e.getAdres());
             st.setInt(3, e.getKapasite());
@@ -60,7 +53,7 @@ public class MekanDAO extends DBConnection {
     public Mekan findByID(int id) {
         Mekan c = null;
         String query = "SELECT * FROM mekan WHERE mekan_id = ?";
-        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+        try (PreparedStatement st = this.getConnection().prepareStatement(query)) {
             st.setInt(1, id);
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
@@ -75,7 +68,7 @@ public class MekanDAO extends DBConnection {
 
     public void delete(Mekan c) {
         String query = "DELETE FROM mekan WHERE mekan_id = ?";
-        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+        try (PreparedStatement st = this.getConnection().prepareStatement(query)) {
             st.setInt(1, c.getMekan_id());
             st.executeUpdate();
         } catch (Exception ex) {
@@ -85,7 +78,7 @@ public class MekanDAO extends DBConnection {
 
     public void update(Mekan c) {
         String query = "UPDATE mekan SET adı = ?, adres = ?, kapasite = ? WHERE mekan_id = ?";
-        try (PreparedStatement st = this.connect().prepareStatement(query)) {
+        try (PreparedStatement st = this.getConnection().prepareStatement(query)) {
             st.setString(1, c.getMekan_adi());
             st.setString(2, c.getAdres());
             st.setInt(3, c.getKapasite());

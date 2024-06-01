@@ -14,27 +14,34 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group mb-3">
-                            <h:inputText value="#{festivalBean.searchKeyword}" styleClass="form-control" />
+                            <h:inputText value="#{sinemaBean.searchKeyword}" styleClass="form-control" />
                             <div class="input-group-append">
-                                <h:commandButton value="Ara" styleClass="btn btn-primary" action="#{festivalBean.searchFestival()}" />
+                                <h:commandButton value="Ara" styleClass="btn btn-primary" action="#{sinemaBean.searchSinema()}" />
                             </div>
                         </div>
+                        
+                        <h:commandButton action="#{sinemaBean.previous()}" value="Previous"/>
+                        <h:commandButton action="#{sinemaBean.next()}" value="Next"/><br/><br/>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Adı</th>
+                                    <th>Film Adı</th>
+                                    <th>Salon No</th>
+                                    <th>Mekan</th>
                                     <th>Tarih</th>
                                     <th>Seç</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ui:repeat value="#{festivalBean.list}" var="etkinlik">
+                                <ui:repeat value="#{sinemaBean.list}" var="etkinlik">
                                     <tr>
-                                        <td>#{etkinlik.festival_id}</td>
-                                        <td>#{etkinlik.festival_adi}</td>
+                                        <td>#{etkinlik.sinema_id}</td>
+                                        <td>#{etkinlik.film_adi}</td>
+                                        <td>#{etkinlik.salon_no}</td>
+                                        <td>#{etkinlik.mekan.mekan_adi}</td>
                                         <td>#{etkinlik.tarih}</td>
-                                        <td><h:commandButton value="Seç" styleClass="btn btn-success" action="#{festivalBean.selectFestival(etkinlik, kullanıcıBean.entity)}" /></td>
+                                        <td><h:commandButton value="Seç" styleClass="btn btn-success" action="#{sinemaBean.selectSinema(etkinlik, kullanıcıBean.entity)}" /></td>
                                     </tr>
                                 </ui:repeat>
                             </tbody>
@@ -42,14 +49,22 @@
                     </div>
 
                     <div class="col-md-6">
-                        <h:dataTable styleClass="table table-striped" value="#{festivalBean.filteredFestivalList}" var="etkinlik">
+                        <h:dataTable styleClass="table table-striped" value="#{sinemaBean.filteredSinemaList}" var="etkinlik">
                             <h:column>
                                 <f:facet name="header">ID</f:facet>
-                                    #{etkinlik.festival_id}
+                                    #{etkinlik.sinema_id}
                             </h:column>
                             <h:column>
-                                <f:facet name="header">Adı</f:facet>
-                                    #{etkinlik.festival_adi}
+                                <f:facet name="header">Film Adı</f:facet>
+                                    #{etkinlik.film_adi}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Salon no </f:facet>
+                                    #{etkinlik.salon_no}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Mekan </f:facet>
+                                    #{etkinlik.mekan.mekan_adi}
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Tarih</f:facet>
@@ -57,7 +72,7 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Seç</f:facet>
-                                <h:commandLink value="Seç" action="#{festivalBean.selectFestival(etkinlik,kullanıcıBean.entity)}" styleClass="btn btn-info" />
+                                <h:commandLink value="Seç" action="#{sinemaBean.selectSinema(etkinlik,kullanıcıBean.entity)}" styleClass="btn btn-info" />
                             </h:column>
                         </h:dataTable>
                     </div>

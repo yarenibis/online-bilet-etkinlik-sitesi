@@ -1,59 +1,65 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      template='/template.xhtml'>
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template='/template.xhtml'>
 
-    
-    
-    
-     <ui:define name='menu'></ui:define>
+    <ui:define name='menu'></ui:define>
     <ui:define name='menu3'></ui:define>
-       
-     <ui:define name='content1'>
+
+    <ui:define name='content1'>
+
         <h:form>
-           
-          
-            
-            Festival adı <h:inputText value="#{festivalBean.entity.festival_adi}" /> <br/>
-            Mekan <h:inputText value="#{festivalBean.entity.mekan}" />
-            
+            <h:commandButton action="#{festivalBean.previous()}" value="Previous"/>
+            <h:commandButton action="#{festivalBean.next()}" value="Next"/><br/><br/>
 
-            Tarih <h:inputText value="#{festivalBean.entity.tarih}" />
-            <h:commandButton rendered="#{festivalBean.entity.festival_id==0}" action="#{festivalBean.create()}" value="Create"/>
-            <h:commandButton rendered="#{festivalBean.entity.festival_id!=0}" action="#{festivalBean.update()}" value="Update"/>
-            <h:commandButton rendered="#{festivalBean.entity.festival_id!=0}" action="#{festivalBean.clear()}" value="Clear Form"/>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="festivalAdi" value="Etkinlik Adı:"/>
+                <h:inputText id="festivalAdi" value="#{festivalBean.entity.festival_adi}"/>
 
+                
+
+                <h:outputLabel for="mekan" value="Mekan:"/>
+                <h:selectOneMenu id="mekan" value="#{festivalBean.entity.mekan}" converter="mekanconverter">
+                    <f:selectItems value="#{mekanBean.list}" var="m" itemValue="#{m}" itemLabel="#{m.mekan_adi}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel for="tarihSaat" value="Tarih-Saat:"/>
+                <h:inputText id="tarihSaat" value="#{festivalBean.entity.tarih}"/><br/>
+
+                <h:commandButton rendered="#{festivalBean.entity.festival_id==0}" action="#{festivalBean.create()}" value="Create"/>
+                <h:commandButton rendered="#{festivalBean.entity.festival_id!=0}" action="#{festivalBean.update()}" value="Update"/>
+                <h:commandButton rendered="#{festivalBean.entity.festival_id!=0}" action="#{festivalBean.clear()}" value="Clear Form"/>
+            </h:panelGrid>
         </h:form>
         <hr/>
         <h:form>
             <h:dataTable value="#{festivalBean.list}" var="entity">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
-                        #{entity.festival_id}
+                    #{entity.festival_id}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">FESTİVAL ADI</f:facet>
-                        #{entity.festival_adi}
+                    <f:facet name="header">ETKİNLİK ADI</f:facet>
+                    #{entity.festival_adi}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">MEKAN </f:facet>
-                        #{entity.mekan}
+                    <f:facet name="header">MEKAN</f:facet>
+                    #{entity.mekan.mekan_adi}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">TARİH</f:facet>
-                        #{entity.tarih}
+                    <f:facet name="header">TARİH-SAAT</f:facet>
+                    #{entity.tarih}
                 </h:column>
-
                 <h:column>
                     <f:facet name="header">ADMİNİSTRATOR</f:facet>
-                    <h:commandButton  action="#{festivalBean.delete(entity)}" value="DELETE"/>
-                    <h:commandButton  action="#{festivalBean.setEntity(entity)}" value="UPDATE"/>
+                    <h:commandButton action="#{festivalBean.delete(entity)}" value="DELETE"/>
+                    <h:commandButton action="#{festivalBean.setEntity(entity)}" value="UPDATE"/>
                 </h:column>
             </h:dataTable>
         </h:form>
-        </ui:define>
-  
+    </ui:define>
+
 </ui:composition>

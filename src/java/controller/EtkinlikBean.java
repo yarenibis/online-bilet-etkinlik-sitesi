@@ -15,6 +15,8 @@ import entity.Sinema;
 
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,23 +164,28 @@ public class EtkinlikBean implements Serializable {
 
     public String selectEtkinlik(Etkinlik etkinlik,Kullanıcı kullanıcı) {
         this.entity = etkinlik;  
-         this.entity = this.getDao().findByID(entity.getId());
+        this.entity = this.getDao().findByID(entity.getId());
+        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
         int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
         
+       
         Bilet bilet = new Bilet();
         bilet.setEtkinlik_id(this.entity.getId()); 
         bilet.setKullanıcı_id(kullanıcı_id); 
        
         this.getBdao().createBilet(bilet);
 
-        return "/kullanıcı/bilet";
+        return "/user/bilet-detay";
+        }
+       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris"; 
     }
 
     
     public void searchEtkinlik() {
         filteredEtkinlikList = new ArrayList<>(); 
         for (Etkinlik etkinlik : list) {
-            if (etkinlik.getAdı().contains(searchKeyword) || etkinlik.getAçıklama().contains(searchKeyword)) {
+            if (etkinlik.getAdı().toLowerCase().contains(searchKeyword.toLowerCase()) || etkinlik.getAçıklama().toLowerCase().contains(searchKeyword.toLowerCase())|| etkinlik.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredEtkinlikList.add(etkinlik); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }

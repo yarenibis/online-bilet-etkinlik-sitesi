@@ -21,7 +21,7 @@ public class BiletDAO extends DBConnection {
     public List<Bilet> getBiletList() {
         List<Bilet> biletlist = new ArrayList<>();
         String query = "SELECT * FROM bilet";
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {
                 biletlist.add(new Bilet(
@@ -38,7 +38,7 @@ public class BiletDAO extends DBConnection {
 
     public void createBilet(Bilet bilet) {
         String query = "INSERT INTO bilet (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, bilet.getEtkinlik_id());
             preparedStatement.setInt(2, bilet.getKullanıcı_id());
             preparedStatement.executeUpdate();
@@ -49,7 +49,7 @@ public class BiletDAO extends DBConnection {
 
     public void deleteBilet(int id) {
         String query = "DELETE FROM bilet WHERE bilet_id = ?";
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -59,7 +59,7 @@ public class BiletDAO extends DBConnection {
 
     public void updateBilet(Bilet b) {
         String query = "UPDATE bilet SET etkinlik_id = ?, kullanıcı_id = ? WHERE bilet_id = ?";
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, b.getEtkinlik_id());
             preparedStatement.setInt(2, b.getKullanıcı_id());
             preparedStatement.setInt(3, b.getBilet_id());
@@ -79,7 +79,7 @@ public class BiletDAO extends DBConnection {
         Bilet c = null;
         String query = "SELECT * FROM bilet WHERE kullanıcı_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -95,7 +95,7 @@ public class BiletDAO extends DBConnection {
     
     private Connection getDb() {
         if (this.db == null) {
-            this.db = this.connect();
+            this.db = this.getConnection();
         }
         return db;
     }

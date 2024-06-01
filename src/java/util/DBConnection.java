@@ -7,16 +7,25 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public abstract class DBConnection {
-     public Connection connect(){
-         Connection c=null;
-         try{
+    private Connection connection;
+
+    public Connection getConnection() {
+        if(this.connection==null){
+             try{
              Class.forName("org.postgresql.Driver");
-             c=DriverManager.getConnection("jdbc:postgresql://localhost:5432/onlineticket","postgres","123456");
+             this.connection=DriverManager.getConnection("jdbc:postgresql://localhost:5432/onlineticket","postgres","123456");
          }
          catch(Exception ex){
              System.out.println(ex.getMessage());
              
          }
-          return c;
-     }
+        }
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+    
+   
 }

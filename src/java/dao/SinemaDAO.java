@@ -25,20 +25,14 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         return mekandao;
     }
 
-    public Connection getDb() {
-        if (this.db == null) {
-            db = this.connect();
 
-        }
-        return db;
-    }
 
     public List<Sinema> list(int page, int pageSize) {
         List<Sinema> etkinlikList = new ArrayList<>();
         int start = (page - 1) * pageSize;
         String query = "SELECT * FROM sinema ORDER BY sinema_id ASC LIMIT ? OFFSET ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, pageSize);
             preparedStatement.setInt(2, start);
             ResultSet rs = preparedStatement.executeQuery();
@@ -49,7 +43,7 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
                         rs.getString("film_adı"),
                         rs.getInt("salon_no"),
                         m,
-                        rs.getString("tarih")
+                         rs.getString("tarih")
                 ));
             }
         } catch (SQLException ex) {
@@ -62,7 +56,7 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         int count = 0;
         String query = "SELECT COUNT(sinema_id) AS total FROM sinema";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
             if (rs.next()) {
                 count = rs.getInt("total");
@@ -74,13 +68,12 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
     }
 
     public void create(Sinema e) {
-        String query = "INSERT INTO sinema (film_adı, salon_no,mekan_id,tarih) VALUES ( ?, ?, ?,?)";
+        String query = "INSERT INTO sinema (film_adı, salon_no,mekan_id) VALUES ( ?, ?, ?)";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, e.getFilm_adi());
             preparedStatement.setInt(2, e.getSalon_no());
             preparedStatement.setInt(3, e.getMekan().getMekan_id());
-            preparedStatement.setString(4, e.getTarih());
 
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -89,13 +82,12 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
     }
 
     public void admincreate(Sinema e) {
-        String query = "INSERT INTO sinema (film_adı,salon_no ,mekan_id,tarih) VALUES ( ?, ?, ?, ?)";
-        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        String query = "INSERT INTO sinema (film_adı,salon_no ,mekan_id) VALUES ( ?, ?, ?)";
+        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, e.getFilm_adi());
              preparedStatement.setInt(2, e.getSalon_no());
             preparedStatement.setInt(3, e.getMekan().getMekan_id());
-            preparedStatement.setString(4, e.getTarih());
 
             preparedStatement.executeUpdate();
 
@@ -117,30 +109,52 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         }
     }
 
-    public void adminupdate(Sinema c) {
-        String query = "UPDATE sinema SET film_adı = ?,  salon_no = ?, mekan_id = ?, tarih = ? WHERE sinema_id = ?";
-        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
-        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-
-        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
-
-            preparedStatement.setString(1, c.getFilm_adi());
-            preparedStatement.setInt(2, c.getSalon_no());
-            preparedStatement.setInt(3, c.getMekan().getMekan_id());
-             preparedStatement.setString(4, c.getTarih());
-            
-            preparedStatement.executeUpdate();
-
-            deleteStatement.setInt(1, c.getSinema_id());
-            deleteStatement.executeUpdate();
-
-            for (Kullanıcı k : c.getKlist()) {
-                insertStatement.setInt(1, c.getSinema_id());
-                insertStatement.setInt(2, k.getKullanıcı_id());
-                insertStatement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+//    public void adminupdate(Sinema c) {
+//        String query = "UPDATE sinema SET film_adı = ?,  salon_no = ?, mekan_id = ?, tarih = ? WHERE sinema_id = ?";
+//        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+//        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+//
+//        try (Connection conn = this.getDb(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
+//
+//            preparedStatement.setString(1, c.getFilm_adi());
+//            preparedStatement.setInt(2, c.getSalon_no());
+//            preparedStatement.setInt(3, c.getMekan().getMekan_id());
+//            preparedStatement.setString(1, c.getTarih());
+//            
+//            preparedStatement.executeUpdate();
+//
+//            deleteStatement.setInt(1, c.getSinema_id());
+//            deleteStatement.executeUpdate();
+//
+//            for (Kullanıcı k : c.getKlist()) {
+//                insertStatement.setInt(1, c.getSinema_id());
+//                insertStatement.setInt(2, k.getKullanıcı_id());
+//                insertStatement.executeUpdate();
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+    
+    
+    
+    
+    public void adminupdate(Sinema c){
+         try{
+           Statement st=this.getConnection().createStatement();
+           String query="UPDATE sinema SET film_adı='"+c.getFilm_adi()+"',salon_no='"+c.getSalon_no()+"',mekan_id='"+c.getMekan().getMekan_id()+"',tarih_saat='"+c.getTarih()+"' where sinema_id="+c.getSinema_id();
+           
+           st.executeUpdate(query);
+           st.executeUpdate("delete  from katılımcı_bilgisi where etkinlik_id= "+c.getSinema_id());
+           
+         
+           
+           for(Kullanıcı k:c.getKlist()){
+               query="insert into katılımcı_bilgisi(etkinlik_id,kullanıcı_id) values("+c.getSinema_id()+","+k.getKullanıcı_id()+")";
+               st.executeUpdate(query);
+           }
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -148,7 +162,7 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE sinema_id = ?";
         String deleteEventQuery = "DELETE FROM sinema WHERE sinema_id = ?";
 
-        try (Connection conn = this.getDb(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
+        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
 
             deleteParticipantsStatement.setInt(1, c.getSinema_id());
             deleteParticipantsStatement.executeUpdate();
@@ -163,7 +177,7 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
     public void delete(Sinema c) {
         String query = "DELETE FROM sinema WHERE sinema_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, c.getSinema_id());
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -174,12 +188,13 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
     public void update(Sinema c) {
         String query = "UPDATE sinema SET film_adı = ?, salon_no = ? , mekan_id = ?, tarih = ? WHERE sinema_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, c.getFilm_adi());
             preparedStatement.setInt(2, c.getSalon_no());
             preparedStatement.setInt(3, c.getMekan().getMekan_id());
-             preparedStatement.setString(4, c.getTarih());
-            
+            preparedStatement.setString(4, c.getTarih());
+             preparedStatement.setInt(5, c.getSinema_id());
+             
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -190,7 +205,7 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         Sinema c = null;
         String query = "SELECT * FROM sinema WHERE sinema_id = ?";
 
-        try (PreparedStatement preparedStatement = this.getDb().prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -203,7 +218,6 @@ public class SinemaDAO extends DBConnection implements Etkinlik_islem<Sinema> {
         }
         return c;
     }
-
 
 
 }

@@ -17,6 +17,16 @@ public class KullanıcıBean implements Serializable {
     private KullanıcıDAO dao;
     private List<Kullanıcı> list;
 
+    private Kullanıcı selectedkullanıcı;
+
+    public Kullanıcı getSelectedkullanıcı() {
+        return selectedkullanıcı;
+    }
+
+    public void setSelectedkullanıcı(Kullanıcı selectedkullanıcı) {
+        this.selectedkullanıcı = selectedkullanıcı;
+    }
+
     public KullanıcıBean() {
         entity = new Kullanıcı();
     }
@@ -25,9 +35,11 @@ public class KullanıcıBean implements Serializable {
         entity = new Kullanıcı();
     }
 
-    public void kullanıcıkayıt() {
+    public String kullanıcıkayıt() {
         this.getDao().kullanıcıkayıt(entity);
         entity = new Kullanıcı();
+        return "/user/etkinlik";
+
     }
 
     public void create() {
@@ -45,26 +57,25 @@ public class KullanıcıBean implements Serializable {
         entity = new Kullanıcı();
     }
 
-    public String giriş() {
-        Kullanıcı existingUser = this.getDao().findByMail(entity.getEmail());
-       
-        if (existingUser == null) {
-            // Kullanıcı mail adresi kayıtlı değilse kayıt sayfasına yönlendir
-            return "/kullanıcı/kayıt";
-        } else if (!existingUser.getŞifre().equals(entity.getŞifre())) {
-            // Şifre yanlışsa hata mesajı göster
-            FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Şifre yanlış.", null));
-            return null;
-        }
-        // Giriş başarılıysa, kullanıcıyı etkinlik sayfasına yönlendir
-         this.entity=this.getDao().findByMail(this.getEmail());
-         return "/kullanıcı/etkinlik";
+
+    
+    
+       public String giriş() {
+           Kullanıcı kullanıcı = this.getDao().findByMail(entity.getEmail());
+         if (kullanıcı==null) {
+        return "/user/kayit?faces-redirect=true";
+        
+    } else if(this.getDao().kullanıcıGirişi(entity.getEmail(), entity.getŞifre())) {
+         this.entity = this.getDao().findByMail(entity.getEmail());
+       return "/user/etkinlik?faces-redirect=true";
+    }else{
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Yanlış şifre!"));
+        return null; // Aynı sayfada kalmak için null döndürüyoruz
     }
-
-
+    }
     
-    
+  
+
     public Kullanıcı getEntity() {
         if (this.entity == null) {
             entity = new Kullanıcı();

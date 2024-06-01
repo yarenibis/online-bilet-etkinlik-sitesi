@@ -8,7 +8,7 @@
      <h:form>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         
-            <a class="navbar-brand" href="index.xhtml" style="font-style: italic; color: blue;">Bileto</a>
+            <a class="navbar-brand" href="/index?faces-redirect=true" style="font-style: italic; color: blue;">Bileto</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -16,27 +16,23 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                       
-                             <h:commandLink styleClass="nav-link btn btn-link" value="Etkinlik" action="/kullanıcı/etkinlik" />
+                             <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/etkinlik')}" value="Etkinlik" action="#{navigationBean.goToPage('/user/etkinlik')}" />
                     </li>
-<!--                    <li class="nav-item">
-                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Bilet" action="/kullanıcı/bilet" />
-                       
-                    </li>-->
+
                     <li class="nav-item">
                         
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Giriş" action="/kullanıcı/giriş" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/giris')}" value="Giriş" action="#{navigationBean.goToPage('/user/giris')}" />
                       
                     </li>
                     <li class="nav-item">
                        
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Kayıt" action="/kullanıcı/kayıt" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/kayit')}" value="Kayıt" action="#{navigationBean.goToPage('/user/kayit')}" />
                         
                     </li>
                     <li class="nav-item">
                       
                             
-                        <h:commandLink styleClass="nav-link btn btn-link" action="#{navigationBean.goToPage('/panel/admin-etkinlik')}" value="Admin"/>
+                        <h:commandLink styleClass="#{navigationBean.getButtonStyle('/panel/admin-etkinlik')}" action="#{navigationBean.goToPage('/panel/admin-etkinlik')}" value="Admin"/>
                     </li>
                 
                     

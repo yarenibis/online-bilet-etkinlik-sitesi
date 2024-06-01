@@ -8,38 +8,41 @@
        <h:form>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         
-           <a class="navbar-brand" href="index.xhtml" style="font-style: italic; color: blue;">Bileto</a>
+           <a class="navbar-brand" href="/index?faces-redirect=true" style="font-style: italic; color: blue;">Bileto</a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                   
+                   <li class="nav-item">
+                      
+                             <h:commandLink styleClass="#{navigationBean.getButtonStyle('/index')}" value="Anasayfa" action="#{navigationBean.goToPage('/index')}" />
+                    </li>
                     
                     <li class="nav-item">
                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Sinema" action="/kullanıcı/sinema" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/sinema')}" value="Sinema" action="#{navigationBean.goToPage('/user/sinema')}" />
                        
                     </li>
                     <li class="nav-item">
                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="TalkShow" action="/kullanıcı/talkshow" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/talkshow')}" value="Talkshow" action="#{navigationBean.goToPage('/user/talkshow')}"/>
                        
                     </li>
                     <li class="nav-item">
                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Festival" action="/kullanıcı/festival" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/festival')}" value="Festival" action="#{navigationBean.goToPage('/user/festival')}" />
                        
                     </li>
                     <li class="nav-item">
                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Tiyatro" action="/kullanıcı/tiyatro" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/tiyatro')}" value="Tiyatro" action="#{navigationBean.goToPage('/user/tiyatro')}" />
                        
                     </li>
                     <li class="nav-item">
                       
-                            <h:commandLink styleClass="nav-link btn btn-link" value="Konser" action="/kullanıcı/konser" />
+                            <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/konser')}" value="Konser" action="#{navigationBean.goToPage('/user/konser')}" />
                        
                     </li>
                 </ul>

@@ -11,7 +11,7 @@ import java.util.List;
  * @author yaren
  */
 public class Sinema {
-     private int sinema_id;
+    private int sinema_id;
     private String film_adi;
     private int salon_no;
     private Mekan mekan;

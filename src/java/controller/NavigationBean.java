@@ -20,33 +20,55 @@ import java.util.Map;
 @SessionScoped
 public class NavigationBean implements Serializable {
 
-    private Map<String, String> pages;
-    
+//    private Map<String, String> pages;
+//    
+//    public NavigationBean() {
+//        pages = new HashMap<>();
+//        // Varsayılan olarak ilk sayfa aktif olsun
+//        pages.put("page1", "active");
+//    }
+//
+//    public Map<String, String> getPages() {
+//        return pages;
+//    }
+//
+//    public void setPages(Map<String, String> pages) {
+//        this.pages = pages;
+//    }
+//    
+//    public String goToPage(String page) {
+//        // Tüm sayfaların aktiflik durumunu sıfırla
+//        for (String key : pages.keySet()) {
+//            pages.put(key, null);
+//        }
+//        // Belirtilen sayfayı aktif yap
+//        pages.put(page, "active");
+//        // Sayfaya yönlendir
+//        return page + "?faces-redirect=true";
+//    }
+     private static final long serialVersionUID = 1L;
+    private String activePage; // Aktif sayfa bilgisini saklamak için kullanılacak değişken
+
     public NavigationBean() {
-        pages = new HashMap<>();
-        // Varsayılan olarak ilk sayfa aktif olsun
-        pages.put("page1", "active");
+        activePage = "/user/etkinlik"; // Varsayılan olarak ilk sayfa aktif olsun
     }
 
-    public Map<String, String> getPages() {
-        return pages;
+    public String getActivePage() {
+        return activePage;
     }
 
-    public void setPages(Map<String, String> pages) {
-        this.pages = pages;
+    public void setActivePage(String activePage) {
+        this.activePage = activePage;
     }
-    
+
     public String goToPage(String page) {
-        // Tüm sayfaların aktiflik durumunu sıfırla
-        for (String key : pages.keySet()) {
-            pages.put(key, null);
-        }
-        // Belirtilen sayfayı aktif yap
-        pages.put(page, "active");
-        // Sayfaya yönlendir
+        activePage = page; // Tıklanan butonun sayfa adını aktif sayfa olarak ayarla
         return page + "?faces-redirect=true";
     }
-    
+
+    public String getButtonStyle(String page) {
+        return activePage.equals(page) ? "nav-link btn btn-link active" : "nav-link btn btn-link";
+    }
     
    
 
