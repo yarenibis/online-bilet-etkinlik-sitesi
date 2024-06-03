@@ -95,15 +95,15 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
     
 
-    public void adminupdate() {
-        this.getDao().adminupdate(entity);
-        entity = new Festival();
-    }
-
-    public void admindelete(Festival c) {
-        this.getDao().admindelete(c);
-        entity = new Festival();
-    }
+//    public void adminupdate() {
+//        this.getDao().adminupdate(entity);
+//        entity = new Festival();
+//    }
+//
+//    public void admindelete(Festival c) {
+//        this.getDao().admindelete(c);
+//        entity = new Festival();
+//    }
     
 
     public BiletDAO getBdao() {
@@ -159,24 +159,24 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
 
    
 
-    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
-        this.entity = festival;  
-        this.entity = this.getDao().findByID(entity.getFestival_id());
-        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-        
-       
-        Bilet bilet = new Bilet();
-        bilet.setEtkinlik_id(this.entity.getFestival_id()); 
-        bilet.setKullanıcı_id(kullanıcı_id); 
-       
-        this.getBdao().createBilet(bilet);
-
-        return "/user/festival-detay";
-        }
-       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-        return "/user/giris"; 
-    }
+//    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
+//        this.entity = festival;  
+//        this.entity = this.getDao().findByID(entity.getFestival_id());
+//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
+//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+//        
+//       
+//        Bilet bilet = new Bilet();
+//        bilet.setEtkinlik_id(this.entity.getFestival_id()); 
+//        bilet.setKullanıcı_id(kullanıcı_id); 
+//       
+//        this.getBdao().createBilet(bilet);
+//
+//        return "/user/festival-detay";
+//        }
+//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+//        return "/user/giris"; 
+//    }
 
     
     public void searchFestival() {

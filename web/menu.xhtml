@@ -8,12 +8,19 @@
      <h:form>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         
-            <a class="navbar-brand" href="/index?faces-redirect=true" style="font-style: italic; color: blue;">Bileto</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <h:form>
+            <h:commandLink action="#{navigationBean.goToPage('/index')}" styleClass="navbar-brand" style="font-style: italic; color: blue;">
+                Bileto
+            </h:commandLink>
+           
+        </h:form>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
+                   
+                    <li class="nav-item">
+                      
+                             <h:commandLink styleClass="#{navigationBean.getButtonStyle('/index')}" value="Anasayfa" action="#{navigationBean.goToPage('/index')}" />
+                    </li>
                     <li class="nav-item">
                       
                              <h:commandLink styleClass="#{navigationBean.getButtonStyle('/user/etkinlik')}" value="Etkinlik" action="#{navigationBean.goToPage('/user/etkinlik')}" />

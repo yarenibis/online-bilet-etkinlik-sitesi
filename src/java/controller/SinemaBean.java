@@ -150,24 +150,24 @@ public class SinemaBean extends BaseController<Sinema, SinemaDAO> implements Ser
 
    
 
-    public String selectSinema(Sinema sinema,Kullanıcı kullanıcı) {
-        this.entity = sinema;  
-        this.entity = this.getDao().findByID(entity.getSinema_id());
-        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-        
-       
-        Bilet bilet = new Bilet();
-        bilet.setEtkinlik_id(this.entity.getSinema_id()); 
-        bilet.setKullanıcı_id(kullanıcı_id); 
-       
-        this.getBdao().createBilet(bilet);
-
-        return "/user/sinema-detay";
-        }
-       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-        return "/user/giris"; 
-    }
+//    public String selectSinema(Sinema sinema,Kullanıcı kullanıcı) {
+//        this.entity = sinema;  
+//        this.entity = this.getDao().findByID(entity.getSinema_id());
+//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
+//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+//        
+//       
+//        Bilet bilet = new Bilet();
+//        bilet.setEtkinlik_id(this.entity.getSinema_id()); 
+//        bilet.setKullanıcı_id(kullanıcı_id); 
+//       
+//        this.getBdao().createBilet(bilet);
+//
+//        return "/user/sinema-detay";
+//        }
+//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+//        return "/user/giris"; 
+//    }
 
     
     public void searchSinema() {

@@ -81,75 +81,75 @@ public class FestivalDAO extends DBConnection implements Etkinlik_islem<Festival
         }
     }
 
-    public void admincreate(Festival e) {
-        String query = "INSERT INTO festival (festival_adı, mekan_id, tarih) VALUES ( ?, ?, ?)";
-
-        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, e.getFestival_adi());
-            preparedStatement.setInt(2, e.getMekan().getMekan_id());
-            preparedStatement.setString(3, e.getTarih());
-            preparedStatement.executeUpdate();
-
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                int et_id = rs.getInt(1);
-                String participantQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-
-                try (PreparedStatement participantStatement = conn.prepareStatement(participantQuery)) {
-                    for (Kullanıcı k : e.getKlist()) {
-                        participantStatement.setInt(1, et_id);
-                        participantStatement.setInt(2, k.getKullanıcı_id());
-                        participantStatement.executeUpdate();
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void adminupdate(Festival c) {
-        String query = "UPDATE festival SET festival_adı = ?, mekan_id = ?, tarih = ? WHERE festival_id = ?";
-        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
-        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
-
-        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
-
-            preparedStatement.setString(1, c.getFestival_adi());
-            preparedStatement.setInt(2, c.getMekan().getMekan_id());
-            preparedStatement.setString(3, c.getTarih());
-            preparedStatement.setInt(4, c.getFestival_id());
-            preparedStatement.executeUpdate();
-
-            deleteStatement.setInt(1, c.getFestival_id());
-            deleteStatement.executeUpdate();
-
-            for (Kullanıcı k : c.getKlist()) {
-                insertStatement.setInt(1, c.getFestival_id());
-                insertStatement.setInt(2, k.getKullanıcı_id());
-                insertStatement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void admindelete(Festival c) {
-        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE festival_id = ?";
-        String deleteEventQuery = "DELETE FROM festival WHERE festival_id = ?";
-
-        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
-
-            deleteParticipantsStatement.setInt(1, c.getFestival_id());
-            deleteParticipantsStatement.executeUpdate();
-
-            deleteEventStatement.setInt(1, c.getFestival_id());
-            deleteEventStatement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    public void admincreate(Festival e) {
+//        String query = "INSERT INTO festival (festival_adı, mekan_id, tarih) VALUES ( ?, ?, ?)";
+//
+//        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            preparedStatement.setString(1, e.getFestival_adi());
+//            preparedStatement.setInt(2, e.getMekan().getMekan_id());
+//            preparedStatement.setString(3, e.getTarih());
+//            preparedStatement.executeUpdate();
+//
+//            ResultSet rs = preparedStatement.getGeneratedKeys();
+//            if (rs.next()) {
+//                int et_id = rs.getInt(1);
+//                String participantQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+//
+//                try (PreparedStatement participantStatement = conn.prepareStatement(participantQuery)) {
+//                    for (Kullanıcı k : e.getKlist()) {
+//                        participantStatement.setInt(1, et_id);
+//                        participantStatement.setInt(2, k.getKullanıcı_id());
+//                        participantStatement.executeUpdate();
+//                    }
+//                }
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+//
+//    public void adminupdate(Festival c) {
+//        String query = "UPDATE festival SET festival_adı = ?, mekan_id = ?, tarih = ? WHERE festival_id = ?";
+//        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+//        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+//
+//        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
+//
+//            preparedStatement.setString(1, c.getFestival_adi());
+//            preparedStatement.setInt(2, c.getMekan().getMekan_id());
+//            preparedStatement.setString(3, c.getTarih());
+//            preparedStatement.setInt(4, c.getFestival_id());
+//            preparedStatement.executeUpdate();
+//
+//            deleteStatement.setInt(1, c.getFestival_id());
+//            deleteStatement.executeUpdate();
+//
+//            for (Kullanıcı k : c.getKlist()) {
+//                insertStatement.setInt(1, c.getFestival_id());
+//                insertStatement.setInt(2, k.getKullanıcı_id());
+//                insertStatement.executeUpdate();
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+//
+//    public void admindelete(Festival c) {
+//        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE festival_id = ?";
+//        String deleteEventQuery = "DELETE FROM festival WHERE festival_id = ?";
+//
+//        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
+//
+//            deleteParticipantsStatement.setInt(1, c.getFestival_id());
+//            deleteParticipantsStatement.executeUpdate();
+//
+//            deleteEventStatement.setInt(1, c.getFestival_id());
+//            deleteEventStatement.executeUpdate();
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     public void delete(Festival c) {
         String query = "DELETE FROM festival WHERE festival_id = ?";

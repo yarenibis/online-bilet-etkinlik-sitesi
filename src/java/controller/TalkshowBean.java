@@ -6,29 +6,29 @@ package controller;
 
 import dao.BiletDAO;
 import dao.KullanıcıDAO;
-import dao.TiyatroDAO;
+import dao.TalkshowDAO;
 import entity.Bilet;
 import entity.Kullanıcı;
-import entity.Tiyatro;
+import entity.Talkshow;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Named(value = "tiyatroBean")
+@Named(value = "talkshowBean")
 @SessionScoped
-public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements Serializable {
+public class TalkshowBean extends BaseController<Talkshow, TalkshowDAO> implements Serializable {
 
-    private Tiyatro entity;
-    private TiyatroDAO dao;
-    private List<Tiyatro> list;
+    private Talkshow entity;
+    private TalkshowDAO dao;
+    private List<Talkshow> list;
     
     private String searchKeyword;
-    private List<Tiyatro> filteredTiyatroList;
+    private List<Talkshow> filteredTalkShowList;
     
     private KullanıcıDAO kdao;
-    private TiyatroDAO edao;
+    private TalkshowDAO edao;
     private BiletDAO bdao;
     
     
@@ -70,31 +70,31 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
     
     
 
-     public TiyatroBean() {
-         super(Tiyatro.class, TiyatroDAO.class);
+     public TalkshowBean() {
+          super(Talkshow.class, TalkshowDAO.class);
     }
 
     public void clear() {
-        entity = new Tiyatro();
+        entity = new Talkshow();
     }
 
     public void create() {
         this.getDao().create(entity);
-        entity = new Tiyatro();
+        entity = new Talkshow();
     }
 
     public void update() {
         this.getDao().update(entity);
-        entity = new Tiyatro();
+        entity = new Talkshow();
     }
 
-    public void delete(Tiyatro c) {
+    public void delete(Talkshow c) {
         this.getDao().delete(c);
-        entity = new Tiyatro();
+        entity = new Talkshow();
     }
     
 
-   
+  
     
 
     public BiletDAO getBdao() {
@@ -119,14 +119,14 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
         this.kdao = kdao;
     }
 
-    public TiyatroDAO getEdao() {
+    public TalkshowDAO getEdao() {
         if (this.edao == null) {
-            this.edao = new TiyatroDAO();
+            this.edao = new TalkshowDAO();
         }
         return edao;
     }
 
-    public void setEdao(TiyatroDAO edao) {
+    public void setEdao(TalkshowDAO edao) {
         this.edao = edao;
     }
 
@@ -140,76 +140,77 @@ public class TiyatroBean extends BaseController<Tiyatro, TiyatroDAO> implements 
         this.searchKeyword = searchKeyword;
     }
 
-    public List<Tiyatro> getFilteredTiyatroList() {
-        return filteredTiyatroList;
+    public List<Talkshow> getFilteredTalkShowList() {
+        return filteredTalkShowList;
     }
 
-    public void setFilteredTiyatroList(List<Tiyatro> filteredTiyatroList) {
-        this.filteredTiyatroList = filteredTiyatroList;
+    public void setFilteredTalkShowList(List<Talkshow> filteredTalkShowList) {
+        this.filteredTalkShowList = filteredTalkShowList;
     }
 
    
 
-//     public String selectTiyatro(Tiyatro tiyatro,Kullanıcı kullanıcı) {
-//        this.entity = tiyatro;  
-//        this.entity = this.getDao().findByID(entity.getId());
+//    public String selectTalkshow(Talkshow talkshow,Kullanıcı kullanıcı) {
+//        this.entity = talkshow;  
+//        this.entity = this.getDao().findByID(entity.getShow_id());
 //        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
 //        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
 //        
 //       
 //        Bilet bilet = new Bilet();
-//        bilet.setEtkinlik_id(this.entity.getId()); 
+//        bilet.setEtkinlik_id(this.entity.getShow_id()); 
 //        bilet.setKullanıcı_id(kullanıcı_id); 
 //       
 //        this.getBdao().createBilet(bilet);
 //
-//        return "/user/tiyatro-detay";
+//        return "/user/talkshow-detay";
 //        }
 //       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
 //        return "/user/giris"; 
 //    }
 
     
-    public void searchTiyatro() {
-        filteredTiyatroList = new ArrayList<>(); 
-        for (Tiyatro tiyatro : list) {
-            if (tiyatro.getAdı().toLowerCase().contains(searchKeyword.toLowerCase())
-                    || tiyatro.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())
-                    || tiyatro.getOyuncu().toLowerCase().contains(searchKeyword.toLowerCase())) {
-                filteredTiyatroList.add(tiyatro); // Arama kriterlerine uyanları yeni listeye ekle
+    public void searchTalkShow() {
+        filteredTalkShowList = new ArrayList<>(); 
+        for (Talkshow konser : list) {
+            if (konser.getShow_adi().toLowerCase().contains(searchKeyword.toLowerCase())
+                    || konser.getShowman_adi().toLowerCase().contains(searchKeyword.toLowerCase())
+                    || konser.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                filteredTalkShowList.add(konser); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }
     }
 
-    public Tiyatro getEntity() {
+    public Talkshow getEntity() {
         if (this.entity == null) {
-            entity = new Tiyatro();
+            entity = new Talkshow();
         }
         return entity;
     }
 
-    public void setEntity(Tiyatro entity) {
+    public void setEntity(Talkshow entity) {
         this.entity = entity;
     }
 
-    public TiyatroDAO getDao() {
+    public TalkshowDAO getDao() {
         if (this.dao == null) {
-            dao = new TiyatroDAO();
+            dao = new TalkshowDAO();
         }
         return dao;
     }
 
-    public void setDao(TiyatroDAO dao) {
+    public void setDao(TalkshowDAO dao) {
         this.dao = dao;
     }
 
-    public List<Tiyatro> getList() {
+    public List<Talkshow> getList() {
         this.list = this.getDao().list(page, pageSize);
         return list;
     }
 
-    public void setList(List<Tiyatro> list) {
+    public void setList(List<Talkshow> list) {
         this.list = list;
     }
 }
+
 

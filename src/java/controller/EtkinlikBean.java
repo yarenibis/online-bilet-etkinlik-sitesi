@@ -96,17 +96,7 @@ public class EtkinlikBean implements Serializable {
         this.getDao().delete(c);
         entity = new Etkinlik();
     }
-    
-
-    public void adminupdate() {
-        this.getDao().adminupdate(entity);
-        entity = new Etkinlik();
-    }
-
-    public void admindelete(Etkinlik c) {
-        this.getDao().admindelete(c);
-        entity = new Etkinlik();
-    }
+   
     
 
     public BiletDAO getBdao() {
@@ -166,18 +156,17 @@ public class EtkinlikBean implements Serializable {
         this.entity = etkinlik;  
         this.entity = this.getDao().findByID(entity.getId());
         if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
+        kullanıcı =this.getKdao().findByMail(kullanıcı.getEmail());
         
        
         Bilet bilet = new Bilet();
-        bilet.setEtkinlik_id(this.entity.getId()); 
-        bilet.setKullanıcı_id(kullanıcı_id); 
+        bilet.setEtkinlik_id(this.entity); 
+        bilet.setKullanıcı_id(kullanıcı); 
        
         this.getBdao().createBilet(bilet);
 
         return "/user/bilet-detay";
-        }
-       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        } 
         return "/user/giris"; 
     }
 
@@ -221,5 +210,9 @@ public class EtkinlikBean implements Serializable {
     public void setList(List<Etkinlik> list) {
         this.list = list;
     }
+    
+    
+    
+     
 
 }

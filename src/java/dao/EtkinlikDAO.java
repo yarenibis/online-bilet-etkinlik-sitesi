@@ -88,48 +88,48 @@ public class EtkinlikDAO extends DBConnection {
     }
 
 
-    public void adminupdate(Etkinlik c) {
-        String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
-        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
-        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+//    public void adminupdate(Etkinlik c) {
+//        String query = "UPDATE etkinlik SET etkinlik_adı = ?, açıklama = ?, mekan_id = ?, tarih_saat = ? WHERE etkinlik_id = ?";
+//        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+//        String insertParticipantsQuery = "INSERT INTO katılımcı_bilgisi (etkinlik_id, kullanıcı_id) VALUES (?, ?)";
+//
+//        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
+//
+//            preparedStatement.setString(1, c.getAdı());
+//            preparedStatement.setString(2, c.getAçıklama());
+//            preparedStatement.setInt(3, c.getMekan().getMekan_id());
+//            preparedStatement.setString(4, c.getTarih_saat());
+//            preparedStatement.setInt(5, c.getId());
+//            preparedStatement.executeUpdate();
+//
+//            deleteStatement.setInt(1, c.getId());
+//            deleteStatement.executeUpdate();
+//
+//            for (Kullanıcı k : c.getKlist()) {
+//                insertStatement.setInt(1, c.getId());
+//                insertStatement.setInt(2, k.getKullanıcı_id());
+//                insertStatement.executeUpdate();
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
-        try (Connection conn = this.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(query); PreparedStatement deleteStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement insertStatement = conn.prepareStatement(insertParticipantsQuery)) {
-
-            preparedStatement.setString(1, c.getAdı());
-            preparedStatement.setString(2, c.getAçıklama());
-            preparedStatement.setInt(3, c.getMekan().getMekan_id());
-            preparedStatement.setString(4, c.getTarih_saat());
-            preparedStatement.setInt(5, c.getId());
-            preparedStatement.executeUpdate();
-
-            deleteStatement.setInt(1, c.getId());
-            deleteStatement.executeUpdate();
-
-            for (Kullanıcı k : c.getKlist()) {
-                insertStatement.setInt(1, c.getId());
-                insertStatement.setInt(2, k.getKullanıcı_id());
-                insertStatement.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void admindelete(Etkinlik c) {
-        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
-        String deleteEventQuery = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
-
-        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
-
-            deleteParticipantsStatement.setInt(1, c.getId());
-            deleteParticipantsStatement.executeUpdate();
-
-            deleteEventStatement.setInt(1, c.getId());
-            deleteEventStatement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    public void admindelete(Etkinlik c) {
+//        String deleteParticipantsQuery = "DELETE FROM katılımcı_bilgisi WHERE etkinlik_id = ?";
+//        String deleteEventQuery = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
+//
+//        try (Connection conn = this.getConnection(); PreparedStatement deleteParticipantsStatement = conn.prepareStatement(deleteParticipantsQuery); PreparedStatement deleteEventStatement = conn.prepareStatement(deleteEventQuery)) {
+//
+//            deleteParticipantsStatement.setInt(1, c.getId());
+//            deleteParticipantsStatement.executeUpdate();
+//
+//            deleteEventStatement.setInt(1, c.getId());
+//            deleteEventStatement.executeUpdate();
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     public void delete(Etkinlik c) {
         String query = "DELETE FROM etkinlik WHERE etkinlik_id = ?";
