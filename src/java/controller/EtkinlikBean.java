@@ -165,7 +165,7 @@ public class EtkinlikBean implements Serializable {
        
         this.getBdao().createBilet(bilet);
 
-        return "/user/bilet-detay";
+        return "/user/bilet";
         } 
         return "/user/giris"; 
     }

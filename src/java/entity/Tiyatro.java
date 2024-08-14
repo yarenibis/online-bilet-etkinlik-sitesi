@@ -11,69 +11,26 @@ import java.util.List;
  *
  * @author yaren
  */
-public class Tiyatro {
-    private int id;
-    private String adı;
-    private Mekan mekan;
+public class Tiyatro extends Etkinlik {
+
     private String oyuncu;
-    private String tarih;
-    
-    
-    List<Kullanıcı> klist;
-    
-    public Tiyatro(int id, String adı, Mekan mekan, String oyuncu, String tarih) {
-        this.id = id;
-        this.adı = adı;
-        this.mekan = mekan;
+    private int etkinlik_id;
+
+    public Tiyatro(int id, String adı, String açıklama, Mekan mekan, String tarih_saat, String type, String oyuncu, int etkinlik_id) {
+        super(id, adı, açıklama, mekan, tarih_saat, "Tiyatro");
         this.oyuncu = oyuncu;
-        this.tarih = tarih;
+        this.etkinlik_id = etkinlik_id;
     }
 
-    public Tiyatro(int id, String adı, Mekan mekan, String oyuncu, String tarih, List<Kullanıcı> klist) {
-        this.id = id;
-        this.adı = adı;
-        this.mekan = mekan;
-        this.oyuncu = oyuncu;
-        this.tarih = tarih;
-        this.klist = klist;
+    public int getEtkinlik_id() {
+        return etkinlik_id;
     }
 
-    
+    public void setEtkinlik_id(int etkinlik_id) {
+        this.etkinlik_id = etkinlik_id;
+    }
 
     public Tiyatro() {
-    }
-
-   
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getAdı() {
-        return adı;
-    }
-
-    public void setAdı(String adı) {
-        this.adı = adı;
-    }
-
-    public String getTarih() {
-        return tarih;
-    }
-
-    public void setTarih(String tarih) {
-        this.tarih = tarih;
-    }
-
-    public Mekan getMekan() {
-        return mekan;
-    }
-
-    public void setMekan(Mekan mekan) {
-        this.mekan = mekan;
     }
 
     public String getOyuncu() {
@@ -84,17 +41,4 @@ public class Tiyatro {
         this.oyuncu = oyuncu;
     }
 
-    public List<Kullanıcı> getKlist() {
-        return klist;
-    }
-
-    public void setKlist(List<Kullanıcı> klist) {
-        this.klist = klist;
-    }
-
-
-    
-    
-    
 }
-

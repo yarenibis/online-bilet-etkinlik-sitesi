@@ -27,8 +27,11 @@
                     <f:selectItems value="#{mekanBean.list}" var="m" itemValue="#{m}" itemLabel="#{m.mekan_adi}"/>
                 </h:selectOneMenu>
 
-                <h:outputLabel for="tarihSaat" value="Tarih Adı"/>
-                <h:inputText id="tarihSaat" value="#{tiyatroBean.entity.tarih}"/><br/>
+<!--                <h:outputLabel for="tarihSaat" value="Tarih Adı"/>
+                <h:inputText id="tarihSaat" value="{tiyatroBean.entity.tarih_saat}"/><br/>-->
+                
+                <h:outputLabel for="tarihSaat" value="Type"/>
+                <h:inputText id="tarihSaat" value="#{tiyatroBean.entity.type}"/><br/>
 
                 <h:commandButton rendered="#{tiyatroBean.entity.id==0}" action="#{tiyatroBean.create()}" value="Create"/>
                 <h:commandButton rendered="#{tiyatroBean.entity.id!=0}" action="#{tiyatroBean.update()}" value="Update"/>
@@ -54,9 +57,13 @@
                     <f:facet name="header">MEKAN</f:facet>
                     #{entity.mekan.mekan_adi}
                 </h:column>
-                <h:column>
+<!--                <h:column>
                     <f:facet name="header">TARİH-SAAT</f:facet>
-                    #{entity.tarih}
+                    {entity.tarih_saat}
+                </h:column>-->
+                <h:column>
+                    <f:facet name="header">TYPE</f:facet>
+                    #{entity.type}
                 </h:column>
                 <h:column>
                     <f:facet name="header">ADMİNİSTRATOR</f:facet>

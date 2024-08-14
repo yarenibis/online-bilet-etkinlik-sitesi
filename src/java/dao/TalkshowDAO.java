@@ -29,7 +29,7 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
     public List<Talkshow> list(int page, int pageSize) {
         List<Talkshow> etkinlikList = new ArrayList<>();
         int start = (page - 1) * pageSize;
-        String query = "SELECT * FROM talkshow ORDER BY show_id ASC LIMIT ? OFFSET ?";
+        String query = "SELECT * FROM talkshow ORDER BY id ASC LIMIT ? OFFSET ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, pageSize);
@@ -38,11 +38,14 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
 
             while (rs.next()) {
                 Mekan m = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                etkinlikList.add(new Talkshow(rs.getInt("show_id"),
-                        rs.getString("show_adı"),
-                        rs.getString("showman_adı"),
-                        m,
-                        rs.getString("tarih")
+                etkinlikList.add(new Talkshow(rs.getInt("id"),
+                        rs.getString("adı"),
+                    rs.getString("açıklama"),
+                    m,
+                    rs.getString("tarih_saat"),
+                    rs.getString("type"),
+                    rs.getString("showman_adı"),
+                        rs.getInt("etkinlik_id")
                 ));
             }
         } catch (SQLException ex) {
@@ -53,7 +56,7 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
 
     public int count() {
         int count = 0;
-        String query = "SELECT COUNT(show_id) AS total FROM talkshow";
+        String query = "SELECT COUNT(id) AS total FROM talkshow";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
@@ -67,13 +70,16 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
     }
 
     public void create(Talkshow e) {
-        String query = "INSERT INTO talkshow (show_adı, showman_adı,mekan_id,tarih) VALUES ( ?, ?, ?,?)";
+        String query = "INSERT INTO talkshow (adı,açıklama,mekan_id,tarih_saat,type,showman_adı) VALUES ( ?, ?, ?,?,?)";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, e.getShow_adi());
-            preparedStatement.setString(2, e.getShowman_adi());
+            preparedStatement.setString(1, e.getAdı());
+            preparedStatement.setString(2, e.getAçıklama());
             preparedStatement.setInt(3, e.getMekan().getMekan_id());
-            preparedStatement.setString(4, e.getTarih());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.setString(5, e.getType());
+            preparedStatement.setString(6, e.getShowman_adi());
+            
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -86,25 +92,31 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
     
     
     
-     public void update(Talkshow c){
-         try{
-           Statement st=this.getConnection().createStatement();
-           String query="update talkshow set show_adı='"+c.getShow_adi()+"',showman_adı='"+c.getShowman_adi()+"',mekan_id='"+c.getMekan().getMekan_id()+"',tarih_saat='"+c.getTarih()+"' where show_id="+c.getShow_id();
-           
-           st.executeUpdate(query);
-           
-        }catch(Exception ex){
-            System.out.println(ex.getMessage());
+      public void update(Talkshow c) {
+        String query = "UPDATE tiyatro SET adı = ? ,açıklama = ? , mekan_id = ?,tarih_saat = ?, type = ? ,showman_adı= ?, WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, c.getAdı());
+            preparedStatement.setString(2, c.getAçıklama());
+            preparedStatement.setInt(3, c.getMekan().getMekan_id());
+            preparedStatement.setString(4, c.getTarih_saat());
+            preparedStatement.setString(5, c.getType());
+            preparedStatement.setString(6, c.getShowman_adi());
+             preparedStatement.setInt(7, c.getId());
+            
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
     
     
 
     public void delete(Talkshow c) {
-        String query = "DELETE FROM talkshow WHERE show_id = ?";
+        String query = "DELETE FROM talkshow WHERE id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
-            preparedStatement.setInt(1, c.getShow_id());
+            preparedStatement.setInt(1, c.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -114,15 +126,16 @@ public class TalkshowDAO extends DBConnection implements Etkinlik_islem<Talkshow
 
     public Talkshow findByID(int id) {
         Talkshow c = null;
-        String query = "SELECT * FROM talkshow WHERE show_id = ?";
+        String query = "SELECT * FROM talkshow WHERE etkinlik_id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                Mekan y = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                c = new Talkshow(rs.getInt("show_id"),rs.getString("show_adı"), rs.getString("showman_adı") ,y,rs.getString("tarih"));
+            Mekan y = this.getMekandao().findByID(rs.getInt("mekan_id"));
+                c = new Talkshow(rs.getInt("id"),rs.getString("adı"),rs.getString("açıklama"),y,rs.getString("tarih_saat"),rs.getString("type"),rs.getString("showman_adı"),rs.getInt("etkinlik_id"));
+               
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

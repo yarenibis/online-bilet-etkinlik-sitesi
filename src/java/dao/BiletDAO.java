@@ -154,25 +154,7 @@ public class BiletDAO extends DBConnection {
      
      
      
-//  public List<Bilet> getBiletlerByKullaniciId(int kullaniciId) {
-//    List<Bilet> biletListesi = new ArrayList<>();
-//    // Kullanıcıya ait biletleri veritabanından al
-//    String query = "SELECT * FROM bilet WHERE kullanıcı_id = ?";
-//    try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
-//        preparedStatement.setInt(1, kullaniciId);
-//        ResultSet resultSet = preparedStatement.executeQuery();
-//
-//        while (resultSet.next()) {
-//            Bilet bilet = new Bilet();
-//            bilet.setBilet_id(resultSet.getInt("bilet_id"));
-//            // Diğer gerekli alanları buradan da alabilirsiniz
-//            biletListesi.add(bilet);
-//        }
-//    } catch (SQLException ex) {
-//        ex.printStackTrace();
-//    }
-//    return biletListesi;
-//}
+
 
 
      

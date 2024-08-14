@@ -5,12 +5,16 @@
 package controller;
 
 import dao.BiletDAO;
+import dao.EtkinlikDAO;
 import dao.KonserDAO;
 import dao.KullanıcıDAO;
 import entity.Bilet;
+import entity.Etkinlik;
 import entity.Konser;
 import entity.Kullanıcı;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -29,7 +33,7 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
     private List<Konser> filteredKonserList;
     
     private KullanıcıDAO kdao;
-    private KonserDAO edao;
+    private EtkinlikDAO edao;
     private BiletDAO bdao;
     
     
@@ -120,16 +124,18 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
         this.kdao = kdao;
     }
 
-    public KonserDAO getEdao() {
-        if (this.edao == null) {
-            this.edao = new KonserDAO();
+    public EtkinlikDAO getEdao() {
+         if(this.edao==null){
+            edao=new EtkinlikDAO();
         }
         return edao;
     }
 
-    public void setEdao(KonserDAO edao) {
+    public void setEdao(EtkinlikDAO edao) {
         this.edao = edao;
     }
+
+   
 
     
     
@@ -151,24 +157,35 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
 
    
 
-//    public String selectKonser(Konser konser,Kullanıcı kullanıcı) {
-//        this.entity = konser;  
-//        this.entity = this.getDao().findByID(entity.getId());
-//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-//        
-//       
-//        Bilet bilet = new Bilet();
-//        bilet.setEtkinlik_id(this.entity.getId()); 
-//        bilet.setKullanıcı_id(kullanıcı_id); 
-//       
-//        this.getBdao().createBilet(bilet);
-//
-//        return "/user/konser-detay";
-//        }
-//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-//        return "/user/giris"; 
-//    }
+     public String selectKonser(Konser konser, Kullanıcı kullanıcı) {
+    // Etkinlik ID'sini almak ve etkinlik nesnesini bulmak
+    this.entity = this.getDao().findByID(konser.getEtkinlik_id());
+    Etkinlik etkinlik= this.getEdao().findByID(entity.getEtkinlik_id());
+    Kullanıcı foundUser = this.getKdao().findByMail(kullanıcı.getEmail());
+
+    if (foundUser != null) {
+        Bilet bilet = new Bilet();
+        
+        // Etkinlik nesnesini bilet nesnesine atayın
+        bilet.setEtkinlik_id(etkinlik);
+        
+        // Kullanıcıyı bilet nesnesine atayın
+        bilet.setKullanıcı_id(foundUser);
+
+        // Bilet nesnesini veritabanına kaydedin
+        this.getBdao().createBilet(bilet);
+
+        System.out.println("********************************************" + etkinlik.getAdı());
+        System.out.println("********************************************" + bilet.getEtkinlik_id().getId());
+        
+        // Başarılı bir şekilde bilet oluşturulduktan sonra yönlendirme yapılır
+        return "/user/konserBilet.xhtml";
+    } else {
+        // Kullanıcı girişi yapılmamışsa hata mesajı göster
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris.xhtml";
+    }
+}
 
     
     public void searchKonser() {
@@ -176,7 +193,7 @@ public class KonserBean extends BaseController<Konser, KonserDAO> implements Ser
         for (Konser konser : list) {
             if (konser.getAdı().toLowerCase().contains(searchKeyword.toLowerCase()) || konser.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())
                     || konser.getSanatçı().toLowerCase().contains(searchKeyword.toLowerCase())
-                    || konser.getTarih().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                    || konser.getTarih_saat().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredKonserList.add(konser); // Arama kriterlerine uyanları yeni listeye ekle
             }
         }

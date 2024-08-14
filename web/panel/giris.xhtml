@@ -8,6 +8,7 @@
 
     <ui:define name='menu'></ui:define>
     <ui:define name='menu3'></ui:define>
+<ui:define name='menu2'></ui:define>
 
     <ui:define name='content1'>
 
@@ -15,16 +16,16 @@
         <h:panelGrid columns="2">
             <div class="mb-3">
                 <label class="form-label">ŞİFRE</label>
-                <h:inputText styleClass="form-control" id="şifre" value="#{kullanıcıBean.entity.şifre}" required="true" />
+                <h:inputText styleClass="form-control" id="şifre" value="#{adminBean.entity.şifre}" required="true" />
             </div>
            
             <div class="mb-3">
                 <label class="form-label">MAİL</label>
-                <h:inputText styleClass="form-control" id="mail" value="#{kullanıcıBean.entity.email}" required="true" />
+                <h:inputText styleClass="form-control" id="mail" value="#{adminBean.entity.email}" required="true" />
             </div>
            
         </h:panelGrid>
-            <h:commandButton styleClass="btn btn-primary" value="Giriş Yap" action="#{kullanıcıBean.giriş(kullanıcıBean.entity)}" />
+            <h:commandButton styleClass="btn btn-primary" value="Giriş Yap" action="#{adminBean.giriş()}" />
         <h:messages globalOnly="true" style="color: red;" />
     </h:form>
    </ui:define>

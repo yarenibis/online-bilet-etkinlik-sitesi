@@ -5,12 +5,16 @@
 package controller;
 
 import dao.BiletDAO;
+import dao.EtkinlikDAO;
 import dao.KullanıcıDAO;
 import dao.SinemaDAO;
 import entity.Bilet;
+import entity.Etkinlik;
 import entity.Kullanıcı;
 import entity.Sinema;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +32,7 @@ public class SinemaBean extends BaseController<Sinema, SinemaDAO> implements Ser
     private List<Sinema> filteredSinemaList;
     
     private KullanıcıDAO kdao;
-    private SinemaDAO edao;
+    private EtkinlikDAO edao;
     private BiletDAO bdao;
     
     
@@ -119,16 +123,18 @@ public class SinemaBean extends BaseController<Sinema, SinemaDAO> implements Ser
         this.kdao = kdao;
     }
 
-    public SinemaDAO getEdao() {
-        if (this.edao == null) {
-            this.edao = new SinemaDAO();
+    public EtkinlikDAO getEdao() {
+         if(this.edao==null){
+            edao=new EtkinlikDAO();
         }
         return edao;
     }
 
-    public void setEdao(SinemaDAO edao) {
+    public void setEdao(EtkinlikDAO edao) {
         this.edao = edao;
     }
+
+   
 
     
     
@@ -150,30 +156,46 @@ public class SinemaBean extends BaseController<Sinema, SinemaDAO> implements Ser
 
    
 
-//    public String selectSinema(Sinema sinema,Kullanıcı kullanıcı) {
-//        this.entity = sinema;  
-//        this.entity = this.getDao().findByID(entity.getSinema_id());
-//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-//        
-//       
-//        Bilet bilet = new Bilet();
-//        bilet.setEtkinlik_id(this.entity.getSinema_id()); 
-//        bilet.setKullanıcı_id(kullanıcı_id); 
-//       
-//        this.getBdao().createBilet(bilet);
-//
-//        return "/user/sinema-detay";
-//        }
-//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-//        return "/user/giris"; 
-//    }
+    
+    
+     public String selectSinema(Sinema sinema, Kullanıcı kullanıcı) {
+    // Etkinlik ID'sini almak ve etkinlik nesnesini bulmak
+    this.entity = this.getDao().findByID(sinema.getEtkinlik_id());
+    Etkinlik etkinlik= this.getEdao().findByID(entity.getEtkinlik_id());
+    Kullanıcı foundUser = this.getKdao().findByMail(kullanıcı.getEmail());
+
+    if (foundUser != null) {
+        Bilet bilet = new Bilet();
+        
+        // Etkinlik nesnesini bilet nesnesine atayın
+        bilet.setEtkinlik_id(etkinlik);
+        
+        // Kullanıcıyı bilet nesnesine atayın
+        bilet.setKullanıcı_id(foundUser);
+
+        // Bilet nesnesini veritabanına kaydedin
+        this.getBdao().createBilet(bilet);
+
+        System.out.println("********************************************" + etkinlik.getAdı());
+        System.out.println("********************************************" + bilet.getEtkinlik_id().getId());
+        
+        // Başarılı bir şekilde bilet oluşturulduktan sonra yönlendirme yapılır
+        return "/user/sinemaBilet.xhtml";
+    } else {
+        // Kullanıcı girişi yapılmamışsa hata mesajı göster
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris.xhtml";
+    }
+}
+
+
+
 
     
     public void searchSinema() {
         filteredSinemaList = new ArrayList<>(); 
         for (Sinema sinema : list) {
-            if (sinema.getFilm_adi().toLowerCase().contains(searchKeyword.toLowerCase())
+            if (sinema.getAdı().toLowerCase().contains(searchKeyword.toLowerCase())
                     || sinema.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredSinemaList.add(sinema); // Arama kriterlerine uyanları yeni listeye ekle
             }

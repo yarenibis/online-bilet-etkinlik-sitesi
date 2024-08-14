@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import java.io.IOException;
 
 @Named(value = "kullanıcıBean")
 @SessionScoped
@@ -74,6 +75,16 @@ public class KullanıcıBean implements Serializable {
     }
     }
     
+       
+        public void logout() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        facesContext.getExternalContext().invalidateSession();
+        try {
+            facesContext.getExternalContext().redirect("/user/giris?faces-redirect=true"); // Giriş sayfasına yönlendirin
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
   
 
     public Kullanıcı getEntity() {

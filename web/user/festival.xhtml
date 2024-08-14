@@ -32,10 +32,10 @@
                             <tbody>
                                 <ui:repeat value="#{festivalBean.list}" var="etkinlik">
                                     <tr>
-                                        <td>#{etkinlik.festival_id}</td>
-                                        <td>#{etkinlik.festival_adi}</td>
+                                        <td>#{etkinlik.id}</td>
+                                        <td>#{etkinlik.adı}</td>
                                         <td>#{etkinlik.mekan.mekan_adi}</td>
-                                        <td>#{etkinlik.tarih}</td>
+                                        <td>#{etkinlik.tarih_saat}</td>
                                         <td><h:commandButton value="Seç" styleClass="btn btn-success" action="#{festivalBean.selectFestival(etkinlik, kullanıcıBean.entity)}" /></td>
                                     </tr>
                                 </ui:repeat>
@@ -47,11 +47,11 @@
                         <h:dataTable styleClass="table table-striped" value="#{festivalBean.filteredFestivalList}" var="etkinlik">
                             <h:column>
                                 <f:facet name="header">ID</f:facet>
-                                    #{etkinlik.festival_id}
+                                    #{etkinlik.id}
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Adı</f:facet>
-                                    #{etkinlik.festival_adi}
+                                    #{etkinlik.adı}
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Mekan</f:facet>
@@ -59,7 +59,7 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Tarih</f:facet>
-                                    #{etkinlik.tarih}
+                                    #{etkinlik.tarih_saat}
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Seç</f:facet>

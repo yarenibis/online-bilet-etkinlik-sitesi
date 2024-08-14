@@ -30,7 +30,7 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
     public List<Konser> list(int page, int pageSize) {
         List<Konser> etkinlikList = new ArrayList<>();
         int start = (page - 1) * pageSize;
-        String query = "SELECT * FROM konser ORDER BY konser_id ASC LIMIT ? OFFSET ?";
+        String query = "SELECT * FROM konser ORDER BY id ASC LIMIT ? OFFSET ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, pageSize);
@@ -39,11 +39,14 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
 
             while (rs.next()) {
                 Mekan m = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                etkinlikList.add(new Konser(rs.getInt("konser_id"),
-                        rs.getString("konser_adı"),
+                etkinlikList.add(new Konser(rs.getInt("id"),
+                        rs.getString("adı"),
+                        rs.getString("açıklama"),
                         m,
-                        rs.getString("tarih"),
-                         rs.getString("sanatçı")
+                        rs.getString("tarih_saat"),
+                        rs.getString("type"),
+                         rs.getString("sanatçı"),
+                        rs.getInt("etkinlik_id")
                 ));
             }
         } catch (SQLException ex) {
@@ -54,7 +57,7 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
 
     public int count() {
         int count = 0;
-        String query = "SELECT COUNT(konser_id) AS total FROM konser";
+        String query = "SELECT COUNT(id) AS total FROM konser";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
@@ -68,13 +71,15 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
     }
 
     public void create(Konser e) {
-        String query = "INSERT INTO konser (konser_adı, mekan_id, tarih ,sanatçı) VALUES ( ?, ?, ?, ?)";
+        String query = "INSERT INTO konser (adı,açıklama, mekan_id, tarih_saat,type ,sanatçı) VALUES ( ?, ?, ?, ?, ?,?)";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, e.getAdı());
-            preparedStatement.setInt(2, e.getMekan().getMekan_id());
-            preparedStatement.setString(3, e.getTarih());
-            preparedStatement.setString(4, e.getSanatçı());
+            preparedStatement.setString(2, e.getAçıklama());
+            preparedStatement.setInt(3, e.getMekan().getMekan_id());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.setString(5, e.getType());
+            preparedStatement.setString(6, e.getSanatçı());
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -84,7 +89,7 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
 
 
     public void delete(Konser c) {
-        String query = "DELETE FROM konser WHERE konser_id = ?";
+        String query = "DELETE FROM konser WHERE id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, c.getId());
@@ -94,15 +99,17 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
         }
     }
 
-    public void update(Konser c) {
-        String query = "UPDATE konser SET konser_adı = ?, mekan_id = ?, tarih = ?, sanatçı = ? WHERE konser_id = ?";
+    public void update(Konser e) {
+        String query = "UPDATE konser SET adı = ?,açıklama=?, mekan_id = ?, tarih_saat = ?,type=? ,sanatçı = ? WHERE id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, c.getAdı());
-            preparedStatement.setInt(2, c.getMekan().getMekan_id());
-            preparedStatement.setString(3, c.getTarih());
-            preparedStatement.setString(4, c.getSanatçı());
-            preparedStatement.setInt(5, c.getId());
+            preparedStatement.setString(1, e.getAdı());
+            preparedStatement.setString(2, e.getAçıklama());
+            preparedStatement.setInt(3, e.getMekan().getMekan_id());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.setString(5, e.getType());
+            preparedStatement.setString(6, e.getSanatçı());
+             preparedStatement.setInt(7, e.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -111,7 +118,7 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
 
     public Konser findByID(int id) {
         Konser c = null;
-        String query = "SELECT * FROM konser WHERE konser_id = ?";
+        String query = "SELECT * FROM konser WHERE etkinlik_id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
@@ -119,7 +126,7 @@ public class KonserDAO extends DBConnection implements Etkinlik_islem<Konser> {
 
             if (rs.next()) {
                 Mekan y = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                c = new Konser(rs.getInt("konser_id"), rs.getString("konser_adı"), y, rs.getString("tarih"),rs.getString("sanatçı"));
+                c = new Konser(rs.getInt("id"), rs.getString("adı"),rs.getString("açıklama"), y, rs.getString("tarih_saat"),rs.getString("type"),rs.getString("sanatçı"),rs.getInt("etkinlik_id"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

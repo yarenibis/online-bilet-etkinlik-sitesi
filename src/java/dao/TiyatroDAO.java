@@ -30,7 +30,7 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
     public List<Tiyatro> list(int page, int pageSize) {
         List<Tiyatro> etkinlikList = new ArrayList<>();
         int start = (page - 1) * pageSize;
-        String query = "SELECT * FROM tiyatro ORDER BY tiyatro_id ASC LIMIT ? OFFSET ?";
+        String query = "SELECT * FROM tiyatro ORDER BY id ASC LIMIT ? OFFSET ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, pageSize);
@@ -39,11 +39,14 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
 
             while (rs.next()) {
                 Mekan m = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                etkinlikList.add(new Tiyatro(rs.getInt("tiyatro_id"),
-                        rs.getString("oyun_adı"),
-                        m,
-                        rs.getString("oyuncu"),
-                        rs.getString("tarih")
+                etkinlikList.add(new Tiyatro(rs.getInt("id"),
+                    rs.getString("adı"),
+                    rs.getString("açıklama"),
+                    m,
+                    rs.getString("tarih_saat"),
+                    rs.getString("type"),
+                    rs.getString("oyuncu"),
+                        rs.getInt("etkinlik_id")
                 ));
             }
         } catch (SQLException ex) {
@@ -54,7 +57,7 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
 
     public int count() {
         int count = 0;
-        String query = "SELECT COUNT(tiyatro_id) AS total FROM tiyatro";
+        String query = "SELECT COUNT(id) AS total FROM tiyatro";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query); ResultSet rs = preparedStatement.executeQuery()) {
 
@@ -68,13 +71,16 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
     }
 
     public void create(Tiyatro e) {
-        String query = "INSERT INTO tiyatro (oyun_adı,mekan_id,oyuncu,tarih) VALUES ( ?, ?, ?,?)";
+        String query = "INSERT INTO tiyatro (adı,açıklama,mekan_id,tarih_saat,type,oyuncu) VALUES ( ?, ?, ?,?,?,?)";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, e.getAdı());
-            preparedStatement.setInt(2, e.getMekan().getMekan_id());
-            preparedStatement.setString(3, e.getOyuncu());
-            preparedStatement.setString(4, e.getTarih());
+            preparedStatement.setString(2, e.getAçıklama());
+            preparedStatement.setInt(3, e.getMekan().getMekan_id());
+            preparedStatement.setString(4, e.getTarih_saat());
+            preparedStatement.setString(5, e.getType());
+            preparedStatement.setString(6, e.getOyuncu());
+            
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -83,7 +89,7 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
 
 
     public void delete(Tiyatro c) {
-        String query = "DELETE FROM tiyatro WHERE tiyatro_id = ?";
+        String query = "DELETE FROM tiyatro WHERE id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, c.getId());
@@ -94,14 +100,16 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
     }
 
     public void update(Tiyatro c) {
-        String query = "UPDATE tiyatro SET oyun_adı = ? , mekan_id = ?,oyuncu= ?, tarih = ? WHERE tiyatro_id = ?";
+        String query = "UPDATE tiyatro SET adı = ? ,açıklama = ? , mekan_id = ?,tarih_saat = ?, type = ? ,oyuncu= ?, WHERE id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, c.getAdı());
-            preparedStatement.setString(2, c.getOyuncu());
+            preparedStatement.setString(2, c.getAçıklama());
             preparedStatement.setInt(3, c.getMekan().getMekan_id());
-            preparedStatement.setString(4, c.getTarih());
-             preparedStatement.setInt(5, c.getId());
+            preparedStatement.setString(4, c.getTarih_saat());
+            preparedStatement.setString(5, c.getType());
+            preparedStatement.setString(6, c.getOyuncu());
+             preparedStatement.setInt(7, c.getId());
             
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -111,7 +119,7 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
 
     public Tiyatro findByID(int id) {
         Tiyatro c = null;
-        String query = "SELECT * FROM tiyatro WHERE tiyatro_id = ?";
+        String query = "SELECT * FROM tiyatro WHERE etkinlik_id = ?";
 
         try (PreparedStatement preparedStatement = this.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
@@ -119,7 +127,7 @@ public class TiyatroDAO extends DBConnection implements Etkinlik_islem<Tiyatro> 
 
             if (rs.next()) {
                 Mekan y = this.getMekandao().findByID(rs.getInt("mekan_id"));
-                c = new Tiyatro(rs.getInt("tiyatro_id"),rs.getString("oyun_adı"),y,rs.getString("oyuncu"),rs.getString("tarih"));
+                c = new Tiyatro(rs.getInt("id"),rs.getString("adı"),rs.getString("açıklama"),y,rs.getString("tarih_saat"),rs.getString("type"),rs.getString("oyuncu"),rs.getInt("etkinlik_id"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

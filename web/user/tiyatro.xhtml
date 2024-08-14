@@ -40,7 +40,7 @@
                                         <td>#{etkinlik.adı}</td>
                                         <td>#{etkinlik.mekan.mekan_adi}</td>
                                         <td>#{etkinlik.oyuncu}</td>
-                                        <td>#{etkinlik.tarih}</td>
+                                        <td>#{etkinlik.tarih_saat}</td>
                                         <td><h:commandButton value="Seç" styleClass="btn btn-success" action="#{tiyatroBean.selectTiyatro(etkinlik, kullanıcıBean.entity)}" /></td>
                                     </tr>
                                 </ui:repeat>
@@ -68,7 +68,7 @@
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Tarih</f:facet>
-                                    #{etkinlik.tarih}
+                                    #{etkinlik.tarih_saat}
                             </h:column>
                             <h:column>
                                 <f:facet name="header">Seç</f:facet>

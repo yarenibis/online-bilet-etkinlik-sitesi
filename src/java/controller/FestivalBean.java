@@ -5,12 +5,16 @@
 package controller;
 
 import dao.BiletDAO;
+import dao.EtkinlikDAO;
 import dao.FestivalDAO;
 import dao.KullanıcıDAO;
 import entity.Bilet;
+import entity.Etkinlik;
 import entity.Festival;
 import entity.Kullanıcı;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,12 +28,12 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     private Festival entity;
     private FestivalDAO dao;
     private List<Festival> list;
+    private EtkinlikDAO edao;
     
     private String searchKeyword;
     private List<Festival> filteredFestivalList;
     
     private KullanıcıDAO kdao;
-    private FestivalDAO edao;
     private BiletDAO bdao;
     
     
@@ -95,16 +99,6 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
     
 
-//    public void adminupdate() {
-//        this.getDao().adminupdate(entity);
-//        entity = new Festival();
-//    }
-//
-//    public void admindelete(Festival c) {
-//        this.getDao().admindelete(c);
-//        entity = new Festival();
-//    }
-    
 
     public BiletDAO getBdao() {
         if (this.bdao == null) {
@@ -128,16 +122,7 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
         this.kdao = kdao;
     }
 
-    public FestivalDAO getEdao() {
-        if (this.edao == null) {
-            this.edao = new FestivalDAO();
-        }
-        return edao;
-    }
 
-    public void setEdao(FestivalDAO edao) {
-        this.edao = edao;
-    }
 
     
     
@@ -158,31 +143,70 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
 
    
-
-//    public String selectFestival(Festival festival,Kullanıcı kullanıcı) {
-//        this.entity = festival;  
-//        this.entity = this.getDao().findByID(entity.getFestival_id());
-//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-//        
-//       
-//        Bilet bilet = new Bilet();
-//        bilet.setEtkinlik_id(this.entity.getFestival_id()); 
-//        bilet.setKullanıcı_id(kullanıcı_id); 
-//       
-//        this.getBdao().createBilet(bilet);
+//    public String selectFestival(Festival festival, Kullanıcı kullanıcı) {
+//    this.entity = festival;  
+//    festival = this.getDao().findByID(entity.getEtkinlik_id());
 //
-//        return "/user/festival-detay";
-//        }
-//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-//        return "/user/giris"; 
+//    Kullanıcı foundUser = this.getKdao().findByMail(kullanıcı.getEmail());
+//
+//    if (foundUser != null) {
+//        int kullanıcı_id = foundUser.getKullanıcı_id();
+//
+//        Bilet bilet = new Bilet();
+//        bilet.setEtkinlik_id(festival); 
+//        bilet.setKullanıcı_id(foundUser);
+//        
+//        this.getBdao().createBilet(bilet);
+//        System.out.println("********************************************"+festival.getEtkinlik_id());
+//        System.out.println("********************************************"+bilet.getEtkinlik_id().getId());
+//        return "/user/festivalBilet.xhtml";
+//        
+//    } else {
+//        // Kullanıcı girişi yapılmamışsa hata mesajı göster
+//        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+//        return "/user/giris.xhtml"; 
 //    }
+//}
+
+    public String selectFestival(Festival festival, Kullanıcı kullanıcı) {
+    // Etkinlik ID'sini almak ve etkinlik nesnesini bulmak
+    this.entity = this.getDao().findByID(festival.getEtkinlik_id());
+    Etkinlik etkinlik= this.getEDao().findByID(entity.getEtkinlik_id());
+    Kullanıcı foundUser = this.getKdao().findByMail(kullanıcı.getEmail());
+
+    if (foundUser != null) {
+        Bilet bilet = new Bilet();
+        
+        // Etkinlik nesnesini bilet nesnesine atayın
+        bilet.setEtkinlik_id(etkinlik);
+        
+        // Kullanıcıyı bilet nesnesine atayın
+        bilet.setKullanıcı_id(foundUser);
+
+        // Bilet nesnesini veritabanına kaydedin
+        this.getBdao().createBilet(bilet);
+
+        System.out.println("********************************************" + etkinlik.getAdı());
+        System.out.println("********************************************" + bilet.getEtkinlik_id().getId());
+        
+        // Başarılı bir şekilde bilet oluşturulduktan sonra yönlendirme yapılır
+        return "/user/festivalBilet.xhtml";
+    } else {
+        // Kullanıcı girişi yapılmamışsa hata mesajı göster
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris.xhtml";
+    }
+}
+
+    
+
+
 
     
     public void searchFestival() {
         filteredFestivalList = new ArrayList<>(); 
         for (Festival etkinlik : list) {
-            if (etkinlik.getFestival_adi().toLowerCase().contains(searchKeyword.toLowerCase()) 
+            if (etkinlik.getAdı().toLowerCase().contains(searchKeyword.toLowerCase()) 
                     || etkinlik.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredFestivalList.add(etkinlik); // Arama kriterlerine uyanları yeni listeye ekle
             }
@@ -201,8 +225,8 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     }
 
     public FestivalDAO getDao() {
-        if (this.dao == null) {
-            dao = new FestivalDAO();
+        if(this.dao==null){
+            dao=new FestivalDAO();
         }
         return dao;
     }
@@ -210,6 +234,8 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     public void setDao(FestivalDAO dao) {
         this.dao = dao;
     }
+
+
 
     public List<Festival> getList() {
         this.list = this.getDao().list(page,pageSize);
@@ -219,6 +245,18 @@ public class FestivalBean extends BaseController<Festival, FestivalDAO> implemen
     public void setList(List<Festival> list) {
         this.list = list;
     }
+    
+    public EtkinlikDAO getEDao() {
+        if (this.edao == null) {
+            edao = new EtkinlikDAO();
+        }
+        return edao;
+    }
+
+    public void setEDao(EtkinlikDAO edao) {
+        this.edao = edao;
+    }
+    
 
 }
 

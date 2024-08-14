@@ -11,38 +11,62 @@
 
     <ui:define name='content1'>
 
-
         <h:form>
             <h:messages id="messages" globalOnly="true" layout="list" showDetail="true" showSummary="true" />
             <h3>BİLET BİLGİLERİ</h3><br/><br/>
             
             <h4>Kullanıcı Bilgileri</h4> <br/>
-            <h:outputText value="ADI:    "/>
-            <h:inputText  value="#{kullanıcıBean.entity.adı}"/><br/>
+            <h:outputText value="ADI: "/>
+            <h:inputText value="#{kullanıcıBean.entity.adı}" readonly="true"/><br/>
 
             <h:outputText value="SOYADI: "/>
-            <h:inputText  value="#{kullanıcıBean.entity.soyadı}"/><br/>
+            <h:inputText value="#{kullanıcıBean.entity.soyadı}" readonly="true"/><br/>
 
-            <h:outputText value="EMAİL:  "/>
-            <h:inputText  value="#{kullanıcıBean.entity.email}"/><br/><br/>
+            <h:outputText value="EMAİL: "/>
+            <h:inputText value="#{kullanıcıBean.entity.email}" readonly="true"/><br/><br/>
 
             <h4>Etkinlik Bilgileri</h4> <br/>
-            <h:outputText value="ETKİNLİK ADI:       "/>
-            <h:inputText  value="#{etkinlikBean.entity.adı}"/><br/>
+           
+           
 
-            <h:outputText value="ETKİNLİK AÇIKLAMASI:"/>
-            <h:inputText  value="#{etkinlikBean.entity.açıklama}"/><br/>
+            <h:outputText rendered="#{sinemaBean.entity.type == 'Sinema'}" value="FİLM ADI: "/>
+            <h:inputText rendered="#{sinemaBean.entity.type == 'Sinema'}" value="#{sinemaBean.entity.adı}" readonly="true"/><br/>
 
-            <h:outputText value="ETKİNLİK TARİH:     "/>
-            <h:inputText  value="#{etkinlikBean.entity.tarih_saat}"/><br/><br/><br/><br/>
+            <h:outputText rendered="#{sinemaBean.entity.type == 'Sinema'}" value="SALON NO: "/>
+            <h:inputText rendered="#{sinemaBean.entity.type == 'Sinema'}" value="#{sinemaBean.entity.salon_no}" readonly="true"/><br/><br/>
+
+            <h:outputText rendered="#{konserBean.entity.type == 'Konser'}" value="KONSER ADI: "/>
+            <h:inputText rendered="#{konserBean.entity.type == 'Konser'}" value="#{konserBean.entity.adı}" readonly="true"/><br/>
+
+            <h:outputText rendered="#{konserBean.entity.type == 'Konser'}" value="SANATÇI: "/>
+            <h:inputText rendered="#{konserBean.entity.type == 'Konser'}" value="#{konserBean.entity.sanatçı}" readonly="true"/><br/>
+
+            <h:outputText rendered="#{konserBean.entity.type == 'Konser'}" value="MEKAN: "/>
+            <h:inputText rendered="#{konserBean.entity.type == 'Konser'}" value="#{konserBean.entity.mekan.mekan_adi}" readonly="true"/><br/><br/>
+
+            <h:outputText rendered="#{tiyatroBean.entity.type == 'Tiyatro'}" value="TİYATRO ADI: "/>
+            <h:inputText rendered="#{tiyatroBean.entity.type == 'Tiyatro'}" value="#{tiyatroBean.entity.adı}" readonly="true"/><br/>
+
+            <h:outputText rendered="#{tiyatroBean.entity.type == 'Tiyatro'}" value="OYUNCU: "/>
+            <h:inputText rendered="#{tiyatroBean.entity.type == 'Tiyatro'}" value="#{tiyatroBean.entity.oyuncu}" readonly="true"/><br/><br/>
+
+            <h:outputText rendered="#{festivalBean.entity.type == 'Festival'}" value="FESTİVAL ADI: "/>
+            <h:inputText rendered="#{festivalBean.entity.type == 'Festival'}" value="#{festivalBean.entity.adı}" readonly="true"/><br/>
+
+            <h:outputText rendered="#{festivalBean.entity.type == 'Festival'}" value="OYUNCU: "/>
+            <h:inputText rendered="#{festivalBean.entity.type == 'Festival'}" value="#{festivalBean.entity.mekan}" readonly="true"/><br/><br/>
+
+             <h:outputText rendered="#{talkshowBean.entity.type == 'Talkshow'}" value="TALKSHOW ADI: "/>
+            <h:inputText rendered="#{talkshowBean.entity.type == 'Talkshow'}" value="#{talkshowBean.entity.adı}" readonly="true"/><br/>
+
+            <h:outputText rendered="#{talkshowBean.entity.type == 'Talkshow'}" value="SHOWMAN ADI "/>
+            <h:inputText rendered="#{talkshowBean.entity.type == 'Talkshow'}" value="#{talkshowBean.entity.showman_adi}" readonly="true"/><br/><br/>
 
             <h3>Biletiniz rezerve edilmiştir. Ödeme elden yapılacaktır.</h3>
 
         </h:form>
     </ui:define>
 
-
-
-
 </ui:composition>
+
 

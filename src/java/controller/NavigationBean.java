@@ -42,5 +42,5 @@ public class NavigationBean implements Serializable {
 }
 
  
-    
+
 

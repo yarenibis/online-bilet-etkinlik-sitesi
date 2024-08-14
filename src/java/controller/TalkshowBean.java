@@ -5,12 +5,16 @@
 package controller;
 
 import dao.BiletDAO;
+import dao.EtkinlikDAO;
 import dao.KullanıcıDAO;
 import dao.TalkshowDAO;
 import entity.Bilet;
+import entity.Etkinlik;
 import entity.Kullanıcı;
 import entity.Talkshow;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +32,7 @@ public class TalkshowBean extends BaseController<Talkshow, TalkshowDAO> implemen
     private List<Talkshow> filteredTalkShowList;
     
     private KullanıcıDAO kdao;
-    private TalkshowDAO edao;
+    private EtkinlikDAO edao;
     private BiletDAO bdao;
     
     
@@ -119,16 +123,18 @@ public class TalkshowBean extends BaseController<Talkshow, TalkshowDAO> implemen
         this.kdao = kdao;
     }
 
-    public TalkshowDAO getEdao() {
-        if (this.edao == null) {
-            this.edao = new TalkshowDAO();
+    public EtkinlikDAO getEdao() {
+        if(this.edao==null){
+            edao=new EtkinlikDAO();
         }
         return edao;
     }
 
-    public void setEdao(TalkshowDAO edao) {
+    public void setEdao(EtkinlikDAO edao) {
         this.edao = edao;
     }
+
+  
 
     
     
@@ -150,30 +156,41 @@ public class TalkshowBean extends BaseController<Talkshow, TalkshowDAO> implemen
 
    
 
-//    public String selectTalkshow(Talkshow talkshow,Kullanıcı kullanıcı) {
-//        this.entity = talkshow;  
-//        this.entity = this.getDao().findByID(entity.getShow_id());
-//        if(this.getKdao().findByMail(kullanıcı.getEmail())!=null){
-//        int kullanıcı_id =this.getKdao().findByMail(kullanıcı.getEmail()).getKullanıcı_id();
-//        
-//       
-//        Bilet bilet = new Bilet();
-//        bilet.setEtkinlik_id(this.entity.getShow_id()); 
-//        bilet.setKullanıcı_id(kullanıcı_id); 
-//       
-//        this.getBdao().createBilet(bilet);
-//
-//        return "/user/talkshow-detay";
-//        }
-//       // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
-//        return "/user/giris"; 
-//    }
+     public String selectTalkshow(Talkshow talkshow, Kullanıcı kullanıcı) {
+    // Etkinlik ID'sini almak ve etkinlik nesnesini bulmak
+    this.entity = this.getDao().findByID(talkshow.getEtkinlik_id());
+    Etkinlik etkinlik= this.getEdao().findByID(entity.getEtkinlik_id());
+    Kullanıcı foundUser = this.getKdao().findByMail(kullanıcı.getEmail());
+
+    if (foundUser != null) {
+        Bilet bilet = new Bilet();
+        
+        // Etkinlik nesnesini bilet nesnesine atayın
+        bilet.setEtkinlik_id(etkinlik);
+        
+        // Kullanıcıyı bilet nesnesine atayın
+        bilet.setKullanıcı_id(foundUser);
+
+        // Bilet nesnesini veritabanına kaydedin
+        this.getBdao().createBilet(bilet);
+
+        System.out.println("********************************************" + etkinlik.getAdı());
+        System.out.println("********************************************" + bilet.getEtkinlik_id().getId());
+        
+        // Başarılı bir şekilde bilet oluşturulduktan sonra yönlendirme yapılır
+        return "/user/talkshowBilet.xhtml";
+    } else {
+        // Kullanıcı girişi yapılmamışsa hata mesajı göster
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hata", "Etkinlik seçmek için giriş yapmalısınız!"));
+        return "/user/giris.xhtml";
+    }
+}
 
     
     public void searchTalkShow() {
         filteredTalkShowList = new ArrayList<>(); 
         for (Talkshow konser : list) {
-            if (konser.getShow_adi().toLowerCase().contains(searchKeyword.toLowerCase())
+            if (konser.getAdı().toLowerCase().contains(searchKeyword.toLowerCase())
                     || konser.getShowman_adi().toLowerCase().contains(searchKeyword.toLowerCase())
                     || konser.getMekan().getMekan_adi().toLowerCase().contains(searchKeyword.toLowerCase())) {
                 filteredTalkShowList.add(konser); // Arama kriterlerine uyanları yeni listeye ekle

@@ -11,50 +11,26 @@ import java.util.List;
  *
  * @author yaren
  */
-public class Talkshow {
-    private int show_id;
-    private String show_adi;
-    private String showman_adi;
-    private Mekan mekan;
-    private String tarih;
-    
-    List<Kullanıcı> klist;
-    
+public class Talkshow extends Etkinlik {
 
-    public Talkshow(int show_id, String show_adi, String showman_adi,Mekan mekan, String tarih) {
-        this.show_id = show_id;
-        this.show_adi = show_adi;
+    private String showman_adi;
+    private int etkinlik_id;
+
+    public Talkshow(int id, String adı, String açıklama, Mekan mekan, String tarih_saat, String type, String showman_adi, int etkinlik_id) {
+        super(id, adı, açıklama, mekan, tarih_saat, "Talkshow");
         this.showman_adi = showman_adi;
-        this.mekan=mekan;
-        this.tarih = tarih;
+        this.etkinlik_id = etkinlik_id;
     }
-    
-    public Talkshow(int show_id, String show_adi, String showman_adi,Mekan mekan, String tarih,List<Kullanıcı> klist) {
-        this.show_id = show_id;
-        this.show_adi = show_adi;
-        this.showman_adi = showman_adi;
-        this.mekan=mekan;
-        this.tarih = tarih;
-        this.klist=klist;
+
+    public int getEtkinlik_id() {
+        return etkinlik_id;
+    }
+
+    public void setEtkinlik_id(int etkinlik_id) {
+        this.etkinlik_id = etkinlik_id;
     }
 
     public Talkshow() {
-    }
-
-    public int getShow_id() {
-        return show_id;
-    }
-
-    public void setShow_id(int show_id) {
-        this.show_id = show_id;
-    }
-
-    public String getShow_adi() {
-        return show_adi;
-    }
-
-    public void setShow_adi(String show_adi) {
-        this.show_adi = show_adi;
     }
 
     public String getShowman_adi() {
@@ -64,31 +40,4 @@ public class Talkshow {
     public void setShowman_adi(String showman_adi) {
         this.showman_adi = showman_adi;
     }
-
-    public String getTarih() {
-        return tarih;
-    }
-
-    public void setTarih(String tarih) {
-        this.tarih = tarih;
-    }
-
-    public Mekan getMekan() {
-        return mekan;
-    }
-
-    public void setMekan(Mekan mekan) {
-        this.mekan = mekan;
-    }
-
-    public List<Kullanıcı> getKlist() {
-        return klist;
-    }
-
-    public void setKlist(List<Kullanıcı> klist) {
-        this.klist = klist;
-    }
-    
-    
 }
-

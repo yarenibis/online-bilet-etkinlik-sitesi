@@ -12,13 +12,23 @@ public class Etkinlik {
     private String açıklama;
     private Mekan mekan;
     private String tarih_saat;
+    private String type;
   
-    private List<Kullanıcı> klist;
+   
     
     public Etkinlik(){
         
     }
 
+    public Etkinlik(int id, String adı, String açıklama, Mekan mekan, String tarih_saat, String type) {
+        this.id = id;
+        this.adı = adı;
+        this.açıklama = açıklama;
+        this.mekan= mekan;
+        this.tarih_saat = tarih_saat;
+        this.type=type;
+    }
+    
     public Etkinlik(int id, String adı, String açıklama, Mekan mekan, String tarih_saat) {
         this.id = id;
         this.adı = adı;
@@ -26,21 +36,13 @@ public class Etkinlik {
         this.mekan= mekan;
         this.tarih_saat = tarih_saat;
     }
-    
-    public Etkinlik(int id, String adı, String açıklama, Mekan mekan, String tarih_saat,List<Kullanıcı> klist) {
-        this.id = id;
-        this.adı = adı;
-        this.açıklama = açıklama;
-        this.mekan= mekan;
-        this.tarih_saat = tarih_saat;
-        this.klist=klist;
-    }
 
-    public Etkinlik(String adı, String açıklama, Mekan mekan, String tarih_saat) {
+    public Etkinlik(String adı, String açıklama, Mekan mekan, String tarih_saat,String type) {
         this.adı = adı;
         this.açıklama = açıklama;
         this.mekan = mekan;
         this.tarih_saat = tarih_saat;
+        this.type=type;
     }
 
 
@@ -88,12 +90,14 @@ public class Etkinlik {
         this.tarih_saat = tarih_saat;
     }
 
-    public List<Kullanıcı> getKlist() {
-        return klist;
+  
+
+    public String getType() {
+        return type;
     }
 
-    public void setKlist(List<Kullanıcı> klist) {
-        this.klist = klist;
+    public void setType(String type) {
+        this.type = type;
     }
     
     

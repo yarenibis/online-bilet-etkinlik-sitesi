@@ -17,7 +17,7 @@
 
             <h:panelGrid columns="2">
                 <h:outputLabel for="sinemaAdi" value="sinema Adı:"/>
-                <h:inputText id="sinemakAdi" value="#{sinemaBean.entity.film_adi}"/>
+                <h:inputText id="sinemakAdi" value="#{sinemaBean.entity.adı}"/>
 
                 
 
@@ -29,9 +29,9 @@
                 <h:outputLabel for="salon" value="Salon"/>
                 <h:inputText id="salon" value="#{sinemaBean.entity.salon_no}"/><br/>
 
-                <h:commandButton rendered="#{sinemaBean.entity.sinema_id==0}" action="#{sinemaBean.create()}" value="Create"/>
-                <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.update()}" value="Update"/>
-                <h:commandButton rendered="#{sinemaBean.entity.sinema_id!=0}" action="#{sinemaBean.clear()}" value="Clear Form"/>
+                <h:commandButton rendered="#{sinemaBean.entity.id==0}" action="#{sinemaBean.create()}" value="Create"/>
+                <h:commandButton rendered="#{sinemaBean.entity.id!=0}" action="#{sinemaBean.update()}" value="Update"/>
+                <h:commandButton rendered="#{sinemaBean.entity.id!=0}" action="#{sinemaBean.clear()}" value="Clear Form"/>
             </h:panelGrid>
         </h:form>
         <hr/>
@@ -39,11 +39,11 @@
             <h:dataTable value="#{sinemaBean.list}" var="entity">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
-                    #{entity.sinema_id}
+                    #{entity.id}
                 </h:column>
                 <h:column>
                     <f:facet name="header">ETKİNLİK ADI</f:facet>
-                    #{entity.film_adi}
+                    #{entity.adı}
                 </h:column>
                 <h:column>
                     <f:facet name="header">MEKAN</f:facet>

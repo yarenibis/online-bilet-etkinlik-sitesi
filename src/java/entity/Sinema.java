@@ -10,50 +10,19 @@ import java.util.List;
  *
  * @author yaren
  */
-public class Sinema {
-    private int sinema_id;
-    private String film_adi;
+public class Sinema extends Etkinlik {
+
     private int salon_no;
-    private Mekan mekan;
-    private String tarih;
-    
-    List<Kullanıcı> klist;
-    
-    public Sinema(){
-        
+    private int etkinlik_id;
+
+    public Sinema() {
+
     }
 
-    public Sinema(int sinema_id, String film_adi, int salon_no,Mekan mekan,String tarih) {
-        this.sinema_id = sinema_id;
-        this.film_adi = film_adi;
+    public Sinema(int id, String adı, String açıklama, Mekan mekan, String tarih_saat, String type, int salon_no, int etkinlik_id) {
+        super(id, adı, açıklama, mekan, tarih_saat, "Sinema");
         this.salon_no = salon_no;
-        this.mekan=mekan;
-        this.tarih=tarih;
-    }
-    
-    public Sinema(int sinema_id, String film_adi, int salon_no,Mekan mekan,String tarih,List<Kullanıcı> klist) {
-        this.sinema_id = sinema_id;
-        this.film_adi = film_adi;
-        this.salon_no = salon_no;
-        this.mekan=mekan;
-        this.tarih=tarih;
-        this.klist=klist;
-    }
-
-    public int getSinema_id() {
-        return sinema_id;
-    }
-
-    public void setSinema_id(int sinema_id) {
-        this.sinema_id = sinema_id;
-    }
-
-    public String getFilm_adi() {
-        return film_adi;
-    }
-
-    public void setFilm_adi(String film_adi) {
-        this.film_adi = film_adi;
+        this.etkinlik_id = etkinlik_id;
     }
 
     public int getSalon_no() {
@@ -64,35 +33,12 @@ public class Sinema {
         this.salon_no = salon_no;
     }
 
-    public Mekan getMekan() {
-        return mekan;
+    public int getEtkinlik_id() {
+        return etkinlik_id;
     }
 
-    public void setMekan(Mekan mekan) {
-        this.mekan = mekan;
+    public void setEtkinlik_id(int etkinlik_id) {
+        this.etkinlik_id = etkinlik_id;
     }
 
-    public List<Kullanıcı> getKlist() {
-        return klist;
-    }
-
-    public void setKlist(List<Kullanıcı> klist) {
-        this.klist = klist;
-    }
-
-    public String getTarih() {
-        return tarih;
-    }
-
-    public void setTarih(String tarih) {
-        this.tarih = tarih;
-    }
-
- 
-    
-    
-    
-    
-    
 }
-
